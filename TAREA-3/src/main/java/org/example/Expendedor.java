@@ -1,4 +1,5 @@
 package org.example;
+import java.util.ArrayList;
 
 /**
  * Clase que representa una expendedora, la cual entrega cinco tipos distintos de productos.
@@ -9,9 +10,10 @@ public class Expendedor {
     private Deposito fanta;
     private Deposito snikers;
     private Deposito super8;
-    private Deposito monVu;
-    private int Precio;
-
+    private Deposito<Moneda> monVu;
+    private int precio;
+    private Producto productoComprado;
+    private int vuelto;
 
     /**
      * Constructor que crea una instancia de {@link Expendedor}.
@@ -55,21 +57,21 @@ public class Expendedor {
      *  *              <li>5 - Snikers</li>
      *  *              <li>6 - Super8</li>
      *  *            </ul>
-     * @return el producto comprado si la moneda es válida, si su valor es mayor o igual al del precio,
+     * CAMBIAR ESTO (RETURN VOID) @return el producto comprado si la moneda es válida, si su valor es mayor o igual al del precio,
      * y si hay stock, en caso contrario se lanza una excepción o retorna {@code null}.
      * @throws PagoInsuficienteExcepcion si el valor de la moneda es menor al precio del producto seleccionado.
      * @throws PagoIncorrectoExcepcion si el valor de la moneda es {@code null}.
      * @throws NoHayProductoExcepcion si no queda stock del producto deseado.
      */
-    public Producto comprarProducto(Moneda moneda, int que) throws PagoInsuficienteExcepcion, PagoIncorrectoExcepcion, NoHayProductoExcepcion {
+    public void comprarProducto(Moneda moneda, int que) throws PagoInsuficienteExcepcion, PagoIncorrectoExcepcion, NoHayProductoExcepcion {
         Producto Producto = null;
 
         if (moneda == null){
             throw new PagoIncorrectoExcepcion();
         }else{
             if(PrecioProductos.COCA.getNum()==que) {   //Cocacola
-                Precio = PrecioProductos.COCA.getPrecio();
-                if (Precio > moneda.getValor()) {
+                precio = PrecioProductos.COCA.getPrecio();
+                if (precio > moneda.getValor()) {
                     monVu.addProducto(moneda);
                     throw new PagoInsuficienteExcepcion();
                 }
@@ -79,8 +81,8 @@ public class Expendedor {
                     throw new NoHayProductoExcepcion();
                 }
             }else if(PrecioProductos.SPRITE.getNum()==que) { //SPRITE
-                Precio = PrecioProductos.SPRITE.getPrecio();
-                if (Precio > moneda.getValor()) {
+                precio = PrecioProductos.SPRITE.getPrecio();
+                if (precio > moneda.getValor()) {
                     monVu.addProducto(moneda);
                     throw new PagoInsuficienteExcepcion();
                 }
@@ -90,8 +92,8 @@ public class Expendedor {
                     throw new NoHayProductoExcepcion();
                 }
             }else if(PrecioProductos.FANTA.getNum()==que) { //FANTA
-                Precio = PrecioProductos.FANTA.getPrecio();
-                if (Precio > moneda.getValor()) {
+                precio = PrecioProductos.FANTA.getPrecio();
+                if (precio > moneda.getValor()) {
                     monVu.addProducto(moneda);
                     throw new PagoInsuficienteExcepcion();
                 }
@@ -101,8 +103,8 @@ public class Expendedor {
                     throw new NoHayProductoExcepcion();
                 }
             }else if(PrecioProductos.SNIKERS.getNum()==que) { //SNIKERS
-                Precio = PrecioProductos.SNIKERS.getPrecio();
-                if (Precio > moneda.getValor()) {
+                precio = PrecioProductos.SNIKERS.getPrecio();
+                if (precio > moneda.getValor()) {
                     monVu.addProducto(moneda);
                     throw new PagoInsuficienteExcepcion();
                 }
@@ -112,8 +114,8 @@ public class Expendedor {
                     throw new NoHayProductoExcepcion();
                 }
             }else if(PrecioProductos.SUPER8.getNum()==que) { //SUPER8
-                Precio = PrecioProductos.SUPER8.getPrecio();
-                if (Precio > moneda.getValor()) {
+                precio = PrecioProductos.SUPER8.getPrecio();
+                if (precio > moneda.getValor()) {
                     monVu.addProducto(moneda);
                     throw new PagoInsuficienteExcepcion();
                 }
@@ -124,17 +126,18 @@ public class Expendedor {
                 }
             } else {
                 monVu.addProducto(moneda); // se devuelve la misma moneda si se solicita producto que no existe.
-                return null;
             }
         }
 
 
-        int vuelto = moneda.getValor() - Precio;
-        while (vuelto >= 100) {
-            monVu.addProducto(new Moneda100());
-            vuelto -= 100;
-        }
-        return Producto;
+        //LOGICA DEL VUELTO
+
+        vuelto = moneda.getValor() - precio;
+        guardarVuelto(vuelto); // Guarda el vuelto en el deposito monVu
+
+        // Guarda el producto comprado
+        productoComprado = Producto;
+
     }
 
 
@@ -146,5 +149,37 @@ public class Expendedor {
      */
     public Moneda getVuelto() {
         return (Moneda) monVu.getProducto();
+    }
+
+    public void guardarVuelto(int vueltoTotal) {
+
+    // Agrega las monedas al dep del vuelto
+        while (vueltoTotal >= 1000) {
+            monVu.addProducto(new Moneda1000());
+            vueltoTotal -= 1000;
+        }
+        while (vueltoTotal >= 500) {
+            monVu.addProducto(new Moneda500());
+            vueltoTotal -= 500;
+        }
+        while (vueltoTotal >= 100) {
+            monVu.addProducto(new Moneda100());
+            vueltoTotal -= 100;
+        }
+
+    }
+
+    public Producto getProductoDep() { //SACA EL PRODUCTO GUARDADO EN EL DEPOSITO
+        Producto p = this.productoComprado;
+        this.productoComprado = null; //Vacía el deposito del producto
+        return p;
+    }
+
+    public Producto getProductoComprado() { // DEVUELVE EL PRODUCTO COMPRADO (SIN SACARLO DEL DEPOSITO)
+        return productoComprado;
+    }
+
+    public int getUltimoVuelto() {
+        return vuelto;
     }
 }

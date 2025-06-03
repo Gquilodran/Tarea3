@@ -28,12 +28,9 @@ public class Comprador {
     public Comprador(Moneda m, int cualProducto, Expendedor exp) throws PagoInsuficienteExcepcion, NoHayProductoExcepcion, PagoIncorrectoExcepcion {
         this.expendedor = exp; // Guarda el expendedor
         Producto producto = null; //almacena el producto
-        producto = exp.comprarProducto(m, cualProducto); //intenta comprar el producto
-        Moneda monedaVuelto = exp.getVuelto(); // obttiene el calor de la moneda
-        while (monedaVuelto != null) {
-            vuelto += monedaVuelto.getValor(); //suma el valor de cada moneda y lo  almacena
-            monedaVuelto = exp.getVuelto(); // ve cuanto es el vuelto
-        }
+        exp.comprarProducto(m, cualProducto); //intenta comprar el producto (PRODUCTO QUEDA GUARDADO EN EXPENDEDOR)
+        vuelto = exp.getUltimoVuelto();
+        producto = exp.getProductoComprado();
         if (producto != null) {
             this.sabor = producto.getSabor(); // guarda sabor si se pudo comprar
         }
