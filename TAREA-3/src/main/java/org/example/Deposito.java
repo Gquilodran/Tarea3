@@ -35,4 +35,12 @@ public class Deposito<T>{
             return null;
         }
     }
+
+    /**
+     * Retorna el número de objetos que se encuentran en <code>deposito</code>.
+     * @return el tamaño del deposito.
+     */
+    public int size() {
+        return deposito.size();
+    }
 }

@@ -3,7 +3,7 @@ package org.example;
 /** Clase abstracta que simula a un producto y almacena su sabor
  * Es la base para la creacion de los multiples productos de la maquina
  */
-abstract class Producto {
+public abstract class Producto {
     /** String que almacena el sabor del producto */
     protected String sabor;
     /** constructor vacio para el uso de clases hijas  */

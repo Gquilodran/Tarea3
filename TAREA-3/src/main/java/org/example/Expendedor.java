@@ -1,5 +1,4 @@
 package org.example;
-import java.util.ArrayList;
 
 /**
  * Clase que representa una expendedora, la cual entrega cinco tipos distintos de productos.
@@ -31,18 +30,11 @@ public class Expendedor {
         super8 = new Deposito<Dulce>();
         monVu = new Deposito<Moneda>();
 
-        for (int i = 0; i < numProductos; i++) {
-            Bebida cocacola = new CocaCola();
-            coca.addProducto(cocacola);
-            Bebida bsprite = new Sprite();
-            sprite.addProducto(bsprite);
-            Bebida bfanta = new Fanta();
-            fanta.addProducto(bfanta);
-            Dulce dsniker = new Sniker();
-            snikers.addProducto(dsniker);
-            Dulce dsuper8 = new Super8();
-            super8.addProducto(dsuper8);
-        }
+        rellenarDeposito(PrecioProductos.COCA, numProductos);
+        rellenarDeposito(PrecioProductos.SPRITE, numProductos);
+        rellenarDeposito(PrecioProductos.FANTA, numProductos);
+        rellenarDeposito(PrecioProductos.SNIKERS, numProductos);
+        rellenarDeposito(PrecioProductos.SUPER8, numProductos);
     }
 
     /**
@@ -182,4 +174,59 @@ public class Expendedor {
     public int getUltimoVuelto() {
         return vuelto;
     }
+
+    /**
+     * Devuelve la cantidad de productos disponibles según el tipo.
+     * @param tipoProducto el tipo de producto del enum PrecioProductos
+     * @return la cantidad disponible
+     */
+    public int getCantidadDisponible(PrecioProductos tipoProducto) {
+        switch (tipoProducto) {
+            case COCA:
+                return coca.size();
+            case SPRITE:
+                return sprite.size();
+            case FANTA:
+                return fanta.size();
+            case SNIKERS:
+                return snikers.size();
+            case SUPER8:
+                return super8.size();
+            default:
+                return 0;
+        }
+    }
+
+    public int rellenarDeposito(PrecioProductos tipoProducto, int cantidad) {
+        switch (tipoProducto) {
+            case COCA:
+                for (int i = 0; i < cantidad; i++) {
+                    coca.addProducto(new CocaCola());
+                }
+                return coca.size();
+            case SPRITE:
+                for (int i = 0; i < cantidad; i++) {
+                    sprite.addProducto(new Sprite());
+                }
+                return sprite.size();
+            case FANTA:
+                for (int i = 0; i < cantidad; i++) {
+                    fanta.addProducto(new Fanta());
+                }
+                return fanta.size();
+            case SNIKERS:
+                for (int i = 0; i < cantidad; i++) {
+                    snikers.addProducto(new Sniker());
+                }
+                return snikers.size();
+            case SUPER8:
+                for (int i = 0; i < cantidad; i++) {
+                    super8.addProducto(new Super8());
+                }
+                return super8.size();
+            default:
+                return 0;
+        }
+    }
+
 }
