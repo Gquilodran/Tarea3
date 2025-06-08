@@ -16,6 +16,7 @@ public class Ventana extends JFrame{
      */
     public Ventana() {
         super();
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLayout((new BorderLayout()));
         this.setTitle("EXPENDEDOR");
         this.setSize(900, 550);

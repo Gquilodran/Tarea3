@@ -4,8 +4,9 @@ package org.example;
  */
 public class Comprador {
     /**
-     * Esta variable almacena el sabor de loq ue compre
+     * Esta variable almacena el sabor de lo que compre
      */
+    private Deposito monedero; // llenar desde el main de aca se sacaran las monedas
     private String sabor;
     /**
      * Esta variable almacena el vuelto
@@ -35,6 +36,8 @@ public class Comprador {
             this.sabor = producto.getSabor(); // guarda sabor si se pudo comprar
         }
     }
+
+
     /**
      * Devuelve el monto total del vuelto recibido por el comprador.
      *

@@ -196,14 +196,19 @@ public class PanelComprador extends JPanel implements ActionListener {
      * @return JPanel con el panel numérico configurado
      */
     private JPanel inicializarPanelNumerico() {
-        // Crea el panel numérico
+
+// Crea el panel numérico
         JPanel panelNumerico = new JPanel();
         panelNumerico.setPreferredSize(new Dimension(300, 150));
         panelNumerico.setBorder(BorderFactory.createTitledBorder("Panel Numérico"));
-
-
-        //FALTA AGREGAR LOS NUMS Y LA LOGICA DEL PANEL
-
+        int i=0;
+        panelNumerico.setLayout(new GridLayout(2, 3, 10, 10));
+        while(i != 6) {
+                JButton boton = new JButton(String.valueOf(i+1));
+            boton.setFont(new Font("Arial", Font.PLAIN, 20));
+            i++;
+            panelNumerico.add(boton);
+        }
         return panelNumerico;
     }
 

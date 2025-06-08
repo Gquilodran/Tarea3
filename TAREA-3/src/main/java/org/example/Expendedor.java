@@ -10,6 +10,7 @@ public class Expendedor {
     private Deposito snikers;
     private Deposito super8;
     private Deposito<Moneda> monVu;
+    private Deposito<Moneda> monHis;
     private int precio;
     private Producto productoComprado;
     private int vuelto;
@@ -29,6 +30,7 @@ public class Expendedor {
         snikers = new Deposito<Dulce>();
         super8 = new Deposito<Dulce>();
         monVu = new Deposito<Moneda>();
+        monHis = new Deposito<Moneda>();
 
         rellenarDeposito(PrecioProductos.COCA, numProductos);
         rellenarDeposito(PrecioProductos.SPRITE, numProductos);
@@ -125,6 +127,7 @@ public class Expendedor {
         //LOGICA DEL VUELTO
 
         vuelto = moneda.getValor() - precio;
+        monHis.addProducto(moneda);
         guardarVuelto(vuelto); // Guarda el vuelto en el deposito monVu
 
         // Guarda el producto comprado
@@ -145,7 +148,7 @@ public class Expendedor {
 
     public void guardarVuelto(int vueltoTotal) {
 
-    // Agrega las monedas al dep del vuelto
+        // Agrega las monedas al dep del vuelto
         while (vueltoTotal >= 1000) {
             monVu.addProducto(new Moneda1000());
             vueltoTotal -= 1000;

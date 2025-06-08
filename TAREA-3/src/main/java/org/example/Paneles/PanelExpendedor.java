@@ -13,7 +13,7 @@ import java.net.URL;
 public class PanelExpendedor extends JPanel implements ActionListener {
 
     private Expendedor expendedor;
-
+    private int item;
     private JButton COCA;
     private JButton SPRITE;
     private JButton FANTA;
@@ -49,11 +49,11 @@ public class PanelExpendedor extends JPanel implements ActionListener {
 
     private void cargarImagenesProductos() {
         // Cargar imágenes de productos
-        iconoCoca = cargarImagenProducto("coca.png", 30, 30);
-        iconoSprite = cargarImagenProducto("sprite.png", 30, 30);
-        iconoFanta = cargarImagenProducto("fanta.png", 30, 30);
-        iconoSnicker = cargarImagenProducto("snicker.png", 30, 30);
-        iconoSuper8 = cargarImagenProducto("super8.png", 30, 30);
+        iconoCoca = cargarImagenProducto("coca.png", 50, 50);
+        iconoSprite = cargarImagenProducto("sprite.png", 50, 50);
+        iconoFanta = cargarImagenProducto("fanta.png", 50, 50);
+        iconoSnicker = cargarImagenProducto("snicker.png", 50, 50);
+        iconoSuper8 = cargarImagenProducto("super8.png", 50, 50);
     }
 
 
@@ -182,10 +182,10 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         panel.removeAll();
 
         // Usar GridLayout para distribuir los productos en una sola fila
-        panel.setLayout(new GridLayout(1, Math.max(5, cantidad), 2, 0));
-
-        // Añadir las imagenes
-        for (int i = 0; i < cantidad; i++) {
+        panel.setLayout(new GridLayout(1, 6, 2, 0));
+        // limitador de mostrar 5 imagenes max
+        int limite = Math.min(5, cantidad);  // Si hay más de 5, solo muestra 5
+        for (int i = 0; i < limite; i++) {
             JLabel label = new JLabel(icono);
             label.setHorizontalAlignment(JLabel.CENTER);
             panel.add(label);
@@ -195,6 +195,15 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         for (int i = cantidad; i < 5; i++) {
             panel.add(new JLabel());
         }
+
+        //agregar contador de productos
+        JLabel contador = new JLabel(String.valueOf(cantidad), SwingConstants.CENTER);
+        contador.setOpaque(true);
+        contador.setBackground(Color.LIGHT_GRAY);
+        contador.setForeground(Color.BLACK);
+        contador.setFont(new Font("Arial", Font.BOLD, 14));
+        contador.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        panel.add(contador);
 
         panel.revalidate();
         panel.repaint();
@@ -207,25 +216,36 @@ public class PanelExpendedor extends JPanel implements ActionListener {
 
         if (e.getSource() == COCA) {
             tipoProducto = PrecioProductos.COCA;
+            item=1;
         } else if (e.getSource() == SPRITE) {
             tipoProducto = PrecioProductos.SPRITE;
+            item=2;
         } else if (e.getSource() == FANTA) {
             tipoProducto = PrecioProductos.FANTA;
+            item=3;
         } else if (e.getSource() == SNICKER) {
             tipoProducto = PrecioProductos.SNIKERS;
+            item=4;
         } else if (e.getSource() == SUPER8) {
             tipoProducto = PrecioProductos.SUPER8;
+            item=5;
         }
 
-        // Si es un botón de producto y está vacío, rellenar
+
+
+        // Si es un botón de producto y está vacío, rellenar // quitar esto
         if (tipoProducto != null && expendedor.getCantidadDisponible(tipoProducto) == 0) {
-            expendedor.rellenarDeposito(tipoProducto, 5); // Rellenar con 5 unidades
+            expendedor.rellenarDeposito(tipoProducto, 8); // Rellenar con 5 unidades
             JOptionPane.showMessageDialog(this,
                     "Se ha rellenado el depósito de " + tipoProducto.name(),
                     "Depósito Rellenado",
                     JOptionPane.INFORMATION_MESSAGE);
             actualizarInventarioVisual();
         }
+    }
+    //retorna el item para el main
+    public int getItem() {
+        return item;
     }
 
     private Expendedor getExpendedorPanel() {
