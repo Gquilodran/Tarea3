@@ -28,8 +28,8 @@ public class Comprador {
      * @throws NoHayProductoExcepcion     Si no hay producto disponible del tipo solicitado.
      * @throws PagoIncorrectoExcepcion    Si la moneda entregada es inválida (por ejemplo, null).
      */
-    public Comprador(int dinero,int pago, int cualProducto, Expendedor exp) throws PagoInsuficienteExcepcion, NoHayProductoExcepcion, PagoIncorrectoExcepcion {
-        this.monedero = new Monedero(dinero);
+    public Comprador(Monedero monedero ,int pago, int cualProducto, Expendedor exp)       throws PagoInsuficienteExcepcion, NoHayProductoExcepcion, PagoIncorrectoExcepcion {
+        this.monedero = monedero;
         this.expendedor = exp;
         Moneda m = monedero.getMoneda(pago);
         // Guarda el expendedor

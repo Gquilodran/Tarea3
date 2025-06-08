@@ -14,15 +14,18 @@ public class PanelPrincipal extends JPanel {
 
 
 
-    public PanelPrincipal(int numProduc) {
+    public PanelPrincipal(int numProduc,int presupuesto) {
         setLayout(new BorderLayout());
+        //aca creamos las clases de la logica
 
-        // Crear el expendedor con 5 productos de cada tipo
+        Monedero monedero = new Monedero(presupuesto);
+
+        // Crear el expendedor con  productos de cada tipo
         expendedor = new Expendedor(numProduc);
 
         // Crear los paneles
         panelExpendedor  = new PanelExpendedor(expendedor);
-        panelComprador = new PanelComprador(expendedor);
+        panelComprador = new PanelComprador(expendedor,panelExpendedor,monedero);
 
         // Añadir paneles al layout
         add(panelComprador.getPanelMonedas(), BorderLayout.WEST);

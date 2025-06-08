@@ -39,4 +39,17 @@ public class Monedero extends Deposito {
     public void  setMoneda(Moneda moneda) {
         monederos.add(moneda);
     }
+    public void mostrarContenido() {
+        int c100 = 0, c500 = 0, c1000 = 0;
+        for (Moneda m : monederos) {
+            if (m instanceof Moneda100) c100++;
+            else if (m instanceof Moneda500) c500++;
+            else if (m instanceof Moneda1000) c1000++;
+        }
+        System.out.println("Contenido del monedero:");
+        System.out.println("1000s: " + c1000);
+        System.out.println("500s: " + c500);
+        System.out.println("100s: " + c100);
+    }
+
 }

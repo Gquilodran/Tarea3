@@ -16,7 +16,7 @@ public class Ventana extends JFrame{
      * Configura el layout, título, tamaño y comportamiento de cierre.
      * Agrega el panel principal al JFrame.
      */
-    public Ventana(int numeroProducto) {
+    public Ventana(int numeroProducto,int presupuesto) {
         super();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLayout((new BorderLayout()));
@@ -25,7 +25,7 @@ public class Ventana extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
 
-        PanelPrincipal panelPrincipal = new PanelPrincipal(numeroProducto);
+        PanelPrincipal panelPrincipal = new PanelPrincipal(numeroProducto,presupuesto);
         this.add(panelPrincipal);
 
         this.setVisible(true);

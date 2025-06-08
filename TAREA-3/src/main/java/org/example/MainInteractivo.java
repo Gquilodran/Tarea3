@@ -15,48 +15,8 @@ public class MainInteractivo {
      */
     public static void main(String[] args) {
 
-        Expendedor expendedor = new Expendedor(10);
-        Ventana GUI = new  Ventana(10);
-        Scanner sc = new Scanner(System.in);
-        boolean seguir = true;
 
+        Ventana GUI = new Ventana(10, 1100);
 
-        System.out.println("----Máquina expendedora----");
-
-        while (seguir) {
-            Moneda monedaComprador = null;
-
-            //Menú de selección de moneda
-            System.out.println("Ingrese su moneda: ");
-            System.out.println("1. 100");
-            System.out.println("2. 500");
-            System.out.println("3. 1000");
-            System.out.println("4. No ingresar moneda.");
-            System.out.println("5. Salir.");
-            int seleccionMenu = sc.nextInt();
-
-            int seleccionMoneda = GUI.getPago();
-
-
-            int seleccionProducto = GUI.getItem();
-
-
-
-            // Se realiza la compra
-            Comprador comprador = null;
-            try {
-                comprador = new Comprador(5000,int botonMoneda, seleccionProducto, expendedor);
-                System.out.println("Compra exitosa!");
-                System.out.println("Su vuelto es: " + comprador.cuantoVuelto());
-                System.out.println("Usted compró: " + comprador.queCompraste() + "\n");
-            } catch (PagoInsuficienteExcepcion | NoHayProductoExcepcion e) {
-                System.out.println(e.getMessage());
-                System.out.println("Su vuelto es: " + expendedor.getVuelto().getValor() + "\n");
-            } catch (PagoIncorrectoExcepcion e) {
-                System.out.println(e.getMessage());
-            }
-
-
-        }
     }
 }

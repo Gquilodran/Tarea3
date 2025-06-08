@@ -17,6 +17,8 @@ public class PanelExpendedor extends JPanel implements ActionListener {
     private JButton SNICKER;
     private JButton SUPER8;
 
+    //texto de producto seleccionado
+    private String cualProd;
     // Paneles para mostrar el inventario gráficamente
     private JPanel panelCocaInventario;
     private JPanel panelSpriteInventario;
@@ -217,18 +219,23 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         if (e.getSource() == COCA) {
             tipoProducto = PrecioProductos.COCA;
             item=1;
+            cualProd="COCA";
         } else if (e.getSource() == SPRITE) {
             tipoProducto = PrecioProductos.SPRITE;
             item=2;
+            cualProd="SPRITE";
         } else if (e.getSource() == FANTA) {
             tipoProducto = PrecioProductos.FANTA;
             item=3;
+            cualProd="FANTA";
         } else if (e.getSource() == SNICKER) {
             tipoProducto = PrecioProductos.SNIKERS;
             item=4;
+            cualProd="SNIKERS";
         } else if (e.getSource() == SUPER8) {
             tipoProducto = PrecioProductos.SUPER8;
             item=5;
+            cualProd="super8";
         }
 
 
@@ -251,4 +258,7 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         return expendedor; // Para hacer la compra en el panel comprador
     }
 
+    public String getcualProd() {
+        return this.cualProd;
+    }
 }
