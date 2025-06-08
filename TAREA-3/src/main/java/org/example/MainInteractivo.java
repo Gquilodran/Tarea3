@@ -16,6 +16,7 @@ public class MainInteractivo {
     public static void main(String[] args) {
 
         Expendedor expendedor = new Expendedor(10);
+        Ventana GUI = new  Ventana(10);
         Scanner sc = new Scanner(System.in);
         boolean seguir = true;
 
@@ -52,39 +53,10 @@ public class MainInteractivo {
                     return;
             }
 
-            // Menú de selección de producto
-            System.out.println("Escoja el tipo de producto:");
-            System.out.println("1. Bebidas");
-            System.out.println("2. Dulces");
-            System.out.println("3. Salir");
-            seleccionMenu = sc.nextInt();
-            int seleccionProducto = 0;
 
-            switch (seleccionMenu) {
-                case 1:
-                    System.out.println("Escoja el tipo de bebida:");
-                    System.out.println("1. Coca Cola -- $" + PrecioProductos.COCA.getPrecio());
-                    System.out.println("2. Sprite -- $" + PrecioProductos.SPRITE.getPrecio());
-                    System.out.println("3. Fanta -- $" + PrecioProductos.FANTA.getPrecio());
-                    System.out.println("9. Regresar");
-                    seleccionProducto = sc.nextInt();
-                    break;
-                case 2:
-                    System.out.println("Escoja el tipo de dulce:");
-                    System.out.println("5. Snicker -- $" + PrecioProductos.SNIKERS.getPrecio());
-                    System.out.println("6. Super 8 -- $" + PrecioProductos.SUPER8.getPrecio());
-                    System.out.println("9. Regresar");
-                    seleccionProducto = sc.nextInt();
-                    break;
-                case 3:
-                    System.out.println("Saliendo...");
-                    return;
-            }
+            int seleccionProducto = GUI.getItem();
 
-            if (seleccionProducto == 9) {
-                System.out.println("Regresando al menú principal...");
-                continue;
-            }
+
 
             // Se realiza la compra
             Comprador comprador = null;

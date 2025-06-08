@@ -1,5 +1,5 @@
-package org.example.Paneles;
-import org.example.Expendedor;
+package org.example;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -12,14 +12,16 @@ public class PanelPrincipal extends JPanel {
     private PanelExpendedor panelExpendedor;
     private PanelComprador panelComprador;
 
-    public PanelPrincipal() {
+
+
+    public PanelPrincipal(int numProduc) {
         setLayout(new BorderLayout());
 
         // Crear el expendedor con 5 productos de cada tipo
-        expendedor = new Expendedor(0);
+        expendedor = new Expendedor(numProduc);
 
         // Crear los paneles
-        panelExpendedor = new PanelExpendedor(expendedor);
+        panelExpendedor  = new PanelExpendedor(expendedor);
         panelComprador = new PanelComprador(expendedor);
 
         // Añadir paneles al layout
@@ -44,4 +46,9 @@ public class PanelPrincipal extends JPanel {
         super.paintComponent(g);
         // Código adicional para dibujar si es necesario
     }
+
+    public int getItem() {
+        return panelExpendedor.getItem();
+    }
+
 }

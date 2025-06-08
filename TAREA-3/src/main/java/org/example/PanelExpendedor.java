@@ -1,7 +1,4 @@
-package org.example.Paneles;
-
-import org.example.Expendedor;
-import org.example.PrecioProductos;
+package org.example;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -146,6 +143,9 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         return null;
     }
 
+
+
+
     private JButton crearBotonProducto(String nombre, int precio, Color color, int tamano, ImageIcon icono) {
         // Crear el botón principal
         JButton boton = new JButton();
@@ -243,7 +243,6 @@ public class PanelExpendedor extends JPanel implements ActionListener {
             actualizarInventarioVisual();
         }
     }
-    //retorna el item para el main
     public int getItem() {
         return item;
     }

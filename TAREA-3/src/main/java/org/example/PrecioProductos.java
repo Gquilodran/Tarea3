@@ -7,8 +7,8 @@ public enum PrecioProductos {
     COCA(1,500),
     SPRITE(2,500),
     FANTA(3,600),
-    SNIKERS(5,400),
-    SUPER8(6,300);
+    SNIKERS(4,400),
+    SUPER8(5,300);
 
     private final int precio;
     private final int num;
