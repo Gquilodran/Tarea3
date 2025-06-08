@@ -6,6 +6,9 @@ public class Comprador {
     /**
      * Esta variable almacena el sabor de loq ue compre
      */
+
+    private Deposito monedero; // llenar desde el main de aca se scaran las monedas
+
     private String sabor;
     /**
      * Esta variable almacena el vuelto
