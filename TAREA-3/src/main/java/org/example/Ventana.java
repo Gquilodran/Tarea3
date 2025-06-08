@@ -40,5 +40,14 @@ public class Ventana extends JFrame{
         }
         return -1; // o cualquier valor por defecto si no se encuentra
     }
+    public int getPago(){
+        for (Component c : this.getContentPane().getComponents()) {
+            if (c instanceof PanelPrincipal) {
+                return ((PanelPrincipal) c).getMon();
+            }
+        }
+        return -1;
+        }
+
 
 }

@@ -35,23 +35,7 @@ public class MainInteractivo {
             System.out.println("5. Salir.");
             int seleccionMenu = sc.nextInt();
 
-            switch (seleccionMenu) {
-                case 1:
-                    monedaComprador = new Moneda100();
-                    break;
-                case 2:
-                    monedaComprador = new Moneda500();
-                    break;
-                case 3:
-                    monedaComprador = new Moneda1000();
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    System.out.println("Saliendo...");
-                    seguir = false;
-                    return;
-            }
+            int seleccionMoneda = GUI.getPago();
 
 
             int seleccionProducto = GUI.getItem();
@@ -61,7 +45,7 @@ public class MainInteractivo {
             // Se realiza la compra
             Comprador comprador = null;
             try {
-                comprador = new Comprador(monedaComprador, seleccionProducto, expendedor);
+                comprador = new Comprador(5000,int botonMoneda, seleccionProducto, expendedor);
                 System.out.println("Compra exitosa!");
                 System.out.println("Su vuelto es: " + comprador.cuantoVuelto());
                 System.out.println("Usted compró: " + comprador.queCompraste() + "\n");

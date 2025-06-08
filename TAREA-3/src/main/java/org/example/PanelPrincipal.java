@@ -50,5 +50,8 @@ public class PanelPrincipal extends JPanel {
     public int getItem() {
         return panelExpendedor.getItem();
     }
+    public int getMon(){
+        return panelComprador.getMoneda();
+    }
 
 }

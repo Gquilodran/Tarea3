@@ -13,7 +13,7 @@ public class Moneda500 extends Moneda{
     public Moneda500(){
         super();
         this.valor = 500;
-        super.getSerie();
+
     }
 
     /**

@@ -7,7 +7,7 @@ public class Comprador {
      * Esta variable almacena el sabor de loq ue compre
      */
 
-    private Deposito monedero; // llenar desde el main de aca se scaran las monedas
+    private Monedero monedero; // llenar desde el cosntructor de aca se scaran las monedas
 
     private String sabor;
     /**
@@ -28,8 +28,11 @@ public class Comprador {
      * @throws NoHayProductoExcepcion     Si no hay producto disponible del tipo solicitado.
      * @throws PagoIncorrectoExcepcion    Si la moneda entregada es inválida (por ejemplo, null).
      */
-    public Comprador(Moneda m, int cualProducto, Expendedor exp) throws PagoInsuficienteExcepcion, NoHayProductoExcepcion, PagoIncorrectoExcepcion {
-        this.expendedor = exp; // Guarda el expendedor
+    public Comprador(int dinero,int pago, int cualProducto, Expendedor exp) throws PagoInsuficienteExcepcion, NoHayProductoExcepcion, PagoIncorrectoExcepcion {
+        this.monedero = new Monedero(dinero);
+        this.expendedor = exp;
+        Moneda m = monedero.getMoneda(pago);
+        // Guarda el expendedor
         Producto producto = null; //almacena el producto
         exp.comprarProducto(m, cualProducto); //intenta comprar el producto (PRODUCTO QUEDA GUARDADO EN EXPENDEDOR)
         vuelto = exp.getUltimoVuelto();

@@ -13,7 +13,9 @@ public class PanelComprador extends JPanel implements ActionListener {
     private static final int ESTADO_SELECCION_PRODUCTO = 1;
     private static final int ESTADO_RECEPCION_PRODUCTO = 2;
     private static final int ESTADO_RECEPCION_VUELTO = 3;
+    //moneda ingresada con enom para sacar del  monedero y guardar luego enel expende
 
+    private int moneda;
     // Estado actual
     private int estadoActual = ESTADO_SELECCION_MONEDA;
 
@@ -256,14 +258,17 @@ public class PanelComprador extends JPanel implements ActionListener {
             if (e.getSource() == botonMoneda100) {
                 monedaSeleccionada = new Moneda100();
                 labelMonedaSeleccionada.setText("$100");
+                moneda=1;
                 avanzarEstado();
             } else if (e.getSource() == botonMoneda500) {
                 monedaSeleccionada = new Moneda500();
                 labelMonedaSeleccionada.setText("$500");
+                moneda=2;
                 avanzarEstado();
             } else if (e.getSource() == botonMoneda1000) {
                 monedaSeleccionada = new Moneda1000();
                 labelMonedaSeleccionada.setText("$1000");
+                moneda=3;
                 avanzarEstado();
             }
         }
@@ -323,5 +328,8 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelMonedas.repaint();
         panelResultado.revalidate();
         panelResultado.repaint();
+    }
+    public int getMoneda() {
+        return moneda;
     }
 }
