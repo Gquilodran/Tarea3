@@ -20,8 +20,6 @@ public class MainInteractivo {
         Expendedor expendedor = new Expendedor(10);
         Scanner sc = new Scanner(System.in);
         boolean seguir = true;
-        new Ventana();
-
 
         System.out.println("----Máquina expendedora----");
 

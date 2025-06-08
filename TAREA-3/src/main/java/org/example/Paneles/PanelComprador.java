@@ -207,6 +207,8 @@ public class PanelComprador extends JPanel implements ActionListener {
                 JButton boton = new JButton(String.valueOf(i+1));
             boton.setFont(new Font("Arial", Font.PLAIN, 20));
             i++;
+
+
             panelNumerico.add(boton);
         }
         return panelNumerico;
