@@ -26,7 +26,7 @@ public class PanelComprador extends JPanel implements ActionListener {
 
     private Expendedor expendedor;
     private PanelExpendedor panelExpendedor;
-    private Monedero monedero;
+    private Comprador comprador;
 
     private int monedaSeleccionadaID = 0; // Para identificar qué moneda se seleccionó (1:100, 2:500, 3:1000)
     private Producto productoComprado = null;
@@ -47,6 +47,11 @@ public class PanelComprador extends JPanel implements ActionListener {
     private JButton botonCompra;
     private JLabel labelEstado;
 
+    // Etiquetas para mostrar cantidad de monedas
+    private JLabel labelContador100;
+    private JLabel labelContador500;
+    private JLabel labelContador1000;
+
     // Iconos de monedas
     private ImageIcon iconoMoneda100;
     private ImageIcon iconoMoneda500;
@@ -56,12 +61,16 @@ public class PanelComprador extends JPanel implements ActionListener {
      * Constructor del panel de comprador
      * @param expendedor referencia al expendedor
      * @param panelExpendedor referencia al panel del expendedor
-     * @param monedero referencia al monedero del usuario
+     * @param monedas100 cantidad inicial de monedas de 100
+     * @param monedas500 cantidad inicial de monedas de 500
+     * @param monedas1000 cantidad inicial de monedas de 1000
      */
-    public PanelComprador(Expendedor expendedor, PanelExpendedor panelExpendedor, Monedero monedero) {
+    public PanelComprador(Expendedor expendedor, PanelExpendedor panelExpendedor, int monedas100, int monedas500, int monedas1000) {
         this.expendedor = expendedor;
         this.panelExpendedor = panelExpendedor;
-        this.monedero = monedero;
+
+        // Crear comprador con cantidades exactas de monedas
+        this.comprador = new Comprador(monedas100, monedas500, monedas1000);
 
         setLayout(new BorderLayout());
 
@@ -72,6 +81,7 @@ public class PanelComprador extends JPanel implements ActionListener {
         inicializarPanelMonedas();
         inicializarPanelResultado();
         actualizarInterfaz();
+        actualizarContadoresMonedas(); // Actualizar los contadores iniciales
     }
 
     /**
@@ -130,10 +140,36 @@ public class PanelComprador extends JPanel implements ActionListener {
         configurarBotonMoneda(botonMoneda500);
         configurarBotonMoneda(botonMoneda1000);
 
-        // Añadir botones de monedas en fila
-        panelBotonesMonedas.add(botonMoneda100);
-        panelBotonesMonedas.add(botonMoneda500);
-        panelBotonesMonedas.add(botonMoneda1000);
+        // Crear etiquetas para mostrar la cantidad de monedas
+        labelContador100 = new JLabel("0", SwingConstants.CENTER);
+        labelContador500 = new JLabel("0", SwingConstants.CENTER);
+        labelContador1000 = new JLabel("0", SwingConstants.CENTER);
+
+        // Estilo para las etiquetas
+        Font fuenteContador = new Font("Arial", Font.BOLD, 12);
+        labelContador100.setFont(fuenteContador);
+        labelContador500.setFont(fuenteContador);
+        labelContador1000.setFont(fuenteContador);
+
+        // Crear paneles para cada moneda y su contador
+        JPanel panelMoneda100 = new JPanel(new BorderLayout(0, 2));
+        JPanel panelMoneda500 = new JPanel(new BorderLayout(0, 2));
+        JPanel panelMoneda1000 = new JPanel(new BorderLayout(0, 2));
+
+        // Añadir botones y contadores a cada panel
+        panelMoneda100.add(botonMoneda100, BorderLayout.CENTER);
+        panelMoneda100.add(labelContador100, BorderLayout.SOUTH);
+
+        panelMoneda500.add(botonMoneda500, BorderLayout.CENTER);
+        panelMoneda500.add(labelContador500, BorderLayout.SOUTH);
+
+        panelMoneda1000.add(botonMoneda1000, BorderLayout.CENTER);
+        panelMoneda1000.add(labelContador1000, BorderLayout.SOUTH);
+
+        // Añadir los paneles al panel de botones de monedas
+        panelBotonesMonedas.add(panelMoneda100);
+        panelBotonesMonedas.add(panelMoneda500);
+        panelBotonesMonedas.add(panelMoneda1000);
 
         // Añadir el panel de monedas en la parte superior del panel central
         panelCentral.add(panelBotonesMonedas, BorderLayout.NORTH);
@@ -171,6 +207,21 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelMonedas.add(panelConsola, BorderLayout.NORTH);
         panelMonedas.add(panelCentral, BorderLayout.CENTER);
         panelMonedas.add(panelInfo, BorderLayout.SOUTH);
+    }
+
+    // Método nuevo para actualizar los contadores de monedas
+    private void actualizarContadoresMonedas() {
+        labelContador100.setText(contarMonedasPorTipo(MONEDA_100) + "");
+        labelContador500.setText(contarMonedasPorTipo(MONEDA_500) + "");
+        labelContador1000.setText(contarMonedasPorTipo(MONEDA_1000) + "");
+    }
+
+    // Método para contar monedas por tipo sin extraerlas
+    private int contarMonedasPorTipo(int tipoMoneda) {
+        if (comprador != null) {
+            return comprador.contarMonedas(tipoMoneda);
+        }
+        return 0;
     }
 
     /**
@@ -249,30 +300,64 @@ public class PanelComprador extends JPanel implements ActionListener {
             return;
         }
 
-        try {
-            // Usamos la clase Comprador para realizar la compra
-            Comprador comprador = new Comprador(monedero, monedaSeleccionadaID, productoSeleccionado, expendedor);
+        // Obtenemos la moneda según el tipo seleccionado
+        Moneda monedaUsada = comprador.sacarMoneda(monedaSeleccionadaID);
 
-            // Actualizar la información después de la compra
-            vueltoTotal = comprador.cuantoVuelto();
+        if (monedaUsada == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No hay monedas de este tipo disponibles en su monedero");
+            reiniciarEstadoParaNuevaCompra();
+            return;
+        }
+
+        try {
+            // Realizamos la compra directamente con el expendedor
+            expendedor.comprarProducto(monedaUsada, productoSeleccionado);
+
+            // Obtenemos el producto y el vuelto
+            Producto producto = expendedor.getProductoDep();
+            int vueltoRecibido = expendedor.getUltimoVuelto();
+
+            // Registramos la compra en el comprador
+            comprador.registrarCompra(producto, vueltoRecibido);
+
+            // Recuperamos el vuelto del expendedor y lo añadimos al monedero del comprador
+            Moneda monedaVuelto;
+            while ((monedaVuelto = expendedor.getVuelto()) != null) {
+                comprador.agregarMoneda(monedaVuelto);
+                monedasVuelto.add(monedaVuelto);
+            }
+
+            // Actualizamos la información después de la compra
+            productoComprado = producto;
+            vueltoTotal = vueltoRecibido;
             panelConsola.setVuelto(vueltoTotal);
 
             String sabor = comprador.queCompraste();
             if (sabor != null) {
                 panelConsola.setProductoSeleccionado(sabor);
                 JOptionPane.showMessageDialog(this, "¡Compra exitosa! Recibió: " + sabor);
-                panelExpendedor.actualizarInventarioVisual(); // Actualizar el inventario visual
+                panelExpendedor.actualizarInventarioVisual();
+                actualizarContadoresMonedas(); // Actualizar los contadores después de la compra
 
-                // En lugar de avanzar al siguiente estado, reiniciamos directamente
-                // para permitir una nueva selección de moneda
+                // Reiniciamos para permitir una nueva selección
                 reiniciarEstadoParaNuevaCompra();
             }
         } catch (PagoInsuficienteExcepcion e) {
             JOptionPane.showMessageDialog(this, "El pago es insuficiente para este producto");
+            // Devolvemos la moneda al monedero
+            comprador.agregarMoneda(monedaUsada);
+            actualizarContadoresMonedas(); // Actualizar contadores cuando devuelve la moneda
         } catch (NoHayProductoExcepcion e) {
             JOptionPane.showMessageDialog(this, "No hay stock de este producto");
+            // Devolvemos la moneda al monedero
+            comprador.agregarMoneda(monedaUsada);
+            actualizarContadoresMonedas(); // Actualizar contadores cuando devuelve la moneda
         } catch (PagoIncorrectoExcepcion e) {
             JOptionPane.showMessageDialog(this, "Moneda inválida");
+            // Devolvemos la moneda al monedero
+            comprador.agregarMoneda(monedaUsada);
+            actualizarContadoresMonedas(); // Actualizar contadores cuando devuelve la moneda
         }
     }
 

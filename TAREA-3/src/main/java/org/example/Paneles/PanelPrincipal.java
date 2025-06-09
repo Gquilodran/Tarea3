@@ -1,34 +1,26 @@
 package org.example.Paneles;
 
-import org.example.Logica.Expendedor;
-import org.example.Logica.Monedero;
+import org.example.Logica.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-
-
 public class PanelPrincipal extends JPanel {
     private Expendedor expendedor;
     private PanelExpendedor panelExpendedor;
     private PanelComprador panelComprador;
 
-
-
-    public PanelPrincipal(int numProduc,int presupuesto) {
+    public PanelPrincipal(int numProduc, int monedas100, int monedas500, int monedas1000) {
         setLayout(new BorderLayout());
-        //aca creamos las clases de la logica
 
-        Monedero monedero = new Monedero(presupuesto);
-
-        // Crear el expendedor con  productos de cada tipo
+        // Crear el expendedor con productos de cada tipo
         expendedor = new Expendedor(numProduc);
 
         // Crear los paneles
-        panelExpendedor  = new PanelExpendedor(expendedor);
-        panelComprador = new PanelComprador(expendedor,panelExpendedor,monedero);
+        panelExpendedor = new PanelExpendedor(expendedor);
+        panelComprador = new PanelComprador(expendedor, panelExpendedor, monedas100, monedas500, monedas1000);
 
         // Añadir paneles al layout
         add(panelComprador.getPanelMonedas(), BorderLayout.WEST);
@@ -39,22 +31,19 @@ public class PanelPrincipal extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Delegar el evento al panel correspondiente
                 panelComprador.procesarClick(e);
-                panelExpendedor.actualizarInventarioVisual();
-                repaint(); // Actualizar la visualización
             }
         });
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        // Código adicional para dibujar si es necesario
-    }
 
-    public int getItem() {
-        return panelExpendedor.getItem();
-    }
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            // Código adicional para dibujar si es necesario
+        }
 
-}
+        public int getItem() {
+            return panelExpendedor.getItem();
+        }
+    }
