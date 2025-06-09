@@ -32,7 +32,7 @@ public class PanelPrincipal extends JPanel {
         // Crear los paneles
         panelExpendedor  = new PanelExpendedor(expendedor);
         panelComprador = new PanelComprador(expendedor,panelExpendedor,monedero);
-        panelMonedero = new PanelMonedero();
+        panelMonedero = new PanelMonedero(presupuesto);
 
         // Añadir paneles al layout
         add(panelComprador.getPanelMonedas(), BorderLayout.WEST);

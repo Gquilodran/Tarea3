@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Monedero extends Deposito {
     private ArrayList<Moneda> monederos;
 
-    Monedero(int dinero) {
+    public Monedero(int dinero) {
         monederos = new ArrayList<>();
         while (dinero > 0) {
             if (dinero >= 1000) {

@@ -2,6 +2,7 @@ package org.example.Paneles;
 
 import org.example.Deposito;
 import org.example.Moneda;
+import org.example.Monedero;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -11,17 +12,19 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
 
-public class PanelMonedero extends JPanel implements ActionListener {
+public class PanelMonedero extends JPanel{
 
     private JPanel panelMonedasVueltoDisplay;
     private JPanel panelMonedero;
     private JPanel panelMonederoDisplay;
     private JButton obtenerVueltoButton;
     private Deposito<Moneda> monedasVueltoDeposito;
-    public PanelMonedero() {
+    private Monedero monedero;
+    public PanelMonedero(int presupuesto) {
         super();
         this.monedasVueltoDeposito = new Deposito<Moneda>();
         inicializarComponentes();
+        monedero = new Monedero(presupuesto);
     }
 
     private void inicializarComponentes() {
@@ -46,90 +49,5 @@ public class PanelMonedero extends JPanel implements ActionListener {
                 this.monedasVueltoDeposito.addProducto(m);
             }
         }
-
-        panelMonedasVueltoDisplay.removeAll();
-
-        List<Moneda> monedasEnDeposito = new ArrayList<>();
-        Moneda tempMoneda;
-
-        Deposito<Moneda> tempDeposito = new Deposito<>();
-        while (true) {
-            tempMoneda = this.monedasVueltoDeposito.getProducto();
-            if (tempMoneda == null) break;
-            monedasEnDeposito.add(tempMoneda);
-            tempDeposito.addProducto(tempMoneda);
         }
-
-        this.monedasVueltoDeposito = tempDeposito;
-
-
-        if (!monedasEnDeposito.isEmpty()) {
-            int totalVuelto = 0;
-            for (Moneda moneda : monedasEnDeposito) {
-                JLabel labelMoneda = new JLabel("$" + moneda.getValor());
-                labelMoneda.setFont(new Font("Arial", Font.BOLD, 16));
-                labelMoneda.setHorizontalAlignment(SwingConstants.CENTER);
-                panelMonedasVueltoDisplay.add(labelMoneda);
-                totalVuelto += moneda.getValor();
-            }
-            JLabel totalLabel = new JLabel("Total: $" + totalVuelto);
-            totalLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            totalLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            panelMonedasVueltoDisplay.add(totalLabel);
-        } else {
-            JLabel labelVacio = new JLabel("No hay vuelto.");
-            labelVacio.setHorizontalAlignment(SwingConstants.CENTER);
-            panelMonedasVueltoDisplay.add(labelVacio);
-        }
-
-        panelMonedasVueltoDisplay.revalidate();
-        panelMonedasVueltoDisplay.repaint();
-    }
-
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == obtenerVueltoButton) {
-            mostrarMensajeVuelto();
-
-            Moneda monedaRetirada;
-            int totalRetirado = 0;
-            while (true) { // Bucle para sacar todas las monedas del depósito
-                monedaRetirada = monedasVueltoDeposito.getProducto();
-                if (monedaRetirada == null) break; // Si ya no hay más monedas
-                totalRetirado += monedaRetirada.getValor();
-            }
-            actualizarVueltoVisual(new ArrayList<>());
-        }
-    }
-
-    private int calcularTotalVuelto() {
-        int total = 0;
-        Deposito<Moneda> tempDeposito = new Deposito<>();
-        Moneda tempMoneda;
-        while (true) {
-            tempMoneda = monedasVueltoDeposito.getProducto();
-            if (tempMoneda == null) break;
-            total += tempMoneda.getValor();
-            tempDeposito.addProducto(tempMoneda);
-        }
-        this.monedasVueltoDeposito = tempDeposito;
-        return total;
-    }
-
-    private void mostrarMensajeVuelto() {
-        int totalVuelto = calcularTotalVuelto();
-
-        if (totalVuelto > 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Ha retirado su vuelto: $" + totalVuelto,
-                    "Vuelto Entregado",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    "No hay vuelto para retirar.",
-                    "Sin Vuelto",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
 }
