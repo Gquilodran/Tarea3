@@ -1,22 +1,24 @@
 package org.example.Paneles;
 
-import org.example.Deposito;
-import org.example.Moneda;
+import org.example.Deposito; // Importar tu clase Deposito
+import org.example.Moneda;   // Importar tu clase Moneda
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.List; // Aunque ahora usas Deposito, List aún es útil para el argumento
+import java.util.ArrayList; // Para inicializar Deposito con una lista si Deposito lo permite, o para usar en argumento
 
 public class PanelMonedero extends JPanel implements ActionListener {
 
-    private JPanel panelMonedasVueltoDisplay;
-    private JPanel panelMonederoBase;
-    private JButton obtenerVueltoButton;
-    private Deposito<Moneda> monedasVueltoDeposito;
+    private JPanel panelMonedasVueltoDisplay; // Renombrado para evitar confusión con panelMonedero
+    private JPanel panelMonederoBase; // Renombrado para ser más claro, si es el panel de las monedas para insertar
+    private JButton obtenerVueltoButton; // Renombrado para mayor claridad
+    private Deposito<Moneda> monedasVueltoDeposito; // Atributo para almacenar las monedas de vuelto en un Deposito
+
+    // Constructor de la clase PanelMonedero
     public PanelMonedero() {
         super();
         this.monedasVueltoDeposito = new Deposito<Moneda>();
@@ -24,9 +26,10 @@ public class PanelMonedero extends JPanel implements ActionListener {
     }
 
     private void inicializarComponentes() {
-
-        setLayout(new GridLayout(2, 1, 5, 5));
+        // Layout principal para PanelMonedero (el JPanel principal de esta clase)
+        setLayout(new GridLayout(2, 1, 5, 5)); // 2 filas, 1 columna, con espacios entre ellas
         setBorder(BorderFactory.createEmptyBorder(25, 25, 10, 10));
+        // Este parece ser el panel donde quieres mostrar el vuelto
         panelMonedasVueltoDisplay = new JPanel();
         panelMonedasVueltoDisplay.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         panelMonedasVueltoDisplay.setBorder(BorderFactory.createTitledBorder(

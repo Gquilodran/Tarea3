@@ -35,7 +35,13 @@ public class Deposito<T>{
             return null;
         }
     }
-
+    public boolean isEmpty(){
+        if(deposito.isEmpty()==true){
+            return true;
+        }else{
+            return false;
+        }
+    }
     /**
      * Retorna el número de objetos que se encuentran en <code>deposito</code>.
      * @return el tamaño del deposito.
