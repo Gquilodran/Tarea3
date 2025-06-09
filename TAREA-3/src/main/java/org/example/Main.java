@@ -1,10 +1,9 @@
 package org.example;
 
-import org.example.Paneles.Ventana;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        new Ventana();
-
+        new Ventana(10,10);
     }
 }

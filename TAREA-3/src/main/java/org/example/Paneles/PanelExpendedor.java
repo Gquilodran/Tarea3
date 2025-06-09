@@ -1,7 +1,4 @@
-package org.example.Paneles;
-
-import org.example.Expendedor;
-import org.example.PrecioProductos;
+package org.example;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -20,6 +17,8 @@ public class PanelExpendedor extends JPanel implements ActionListener {
     private JButton SNICKER;
     private JButton SUPER8;
 
+    //texto de producto seleccionado
+    private String cualProd;
     // Paneles para mostrar el inventario gráficamente
     private JPanel panelCocaInventario;
     private JPanel panelSpriteInventario;
@@ -49,18 +48,18 @@ public class PanelExpendedor extends JPanel implements ActionListener {
 
     private void cargarImagenesProductos() {
         // Cargar imágenes de productos
-        iconoCoca = cargarImagenProducto("coca.png", 50, 50);
-        iconoSprite = cargarImagenProducto("sprite.png", 50, 50);
-        iconoFanta = cargarImagenProducto("fanta.png", 50, 50);
-        iconoSnicker = cargarImagenProducto("snicker.png", 50, 50);
-        iconoSuper8 = cargarImagenProducto("super8.png", 50, 50);
+        iconoCoca = cargarImagenProducto("coca.png", 30, 30);
+        iconoSprite = cargarImagenProducto("sprite.png", 30, 30);
+        iconoFanta = cargarImagenProducto("fanta.png", 30, 30);
+        iconoSnicker = cargarImagenProducto("snicker.png", 30, 30);
+        iconoSuper8 = cargarImagenProducto("super8.png", 30, 30);
     }
 
 
     private void inicializarComponentes() {
         // Layout principal
-        setLayout(null);
-        setBorder(BorderFactory.createEmptyBorder(15, 15, 100, 1000));
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         // Paneles para visualizar el inventario
         panelCocaInventario = crearPanelInventario();
@@ -70,81 +69,31 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         panelSuper8Inventario = crearPanelInventario();
 
         // Panel principal para productos
-        JPanel panelProductos = new JPanel(); // <--- Paso 1: Crea el panel sin LayoutManager
-        panelProductos.setLayout(null);
+        JPanel panelProductos = new JPanel(new BorderLayout(0, 10));
+
         // Panel para bebidas con sus inventarios
-        JPanel panelBebidasContenedor = new JPanel(); // <--- CAMBIO 3a
-        panelBebidasContenedor.setLayout(null);
+        JPanel panelBebidasContenedor = new JPanel(new GridLayout(2, 3, 10, 5));
         panelBebidasContenedor.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), "BEBIDAS",
                 TitledBorder.CENTER, TitledBorder.TOP,
                 new Font("Arial", Font.BOLD, 16)));
-        panelBebidasContenedor.setBounds(50, 60, 800, 800);
 
         // Panel para dulces con sus inventarios
-        JPanel panelDulcesContenedor = new JPanel();
-        panelDulcesContenedor.setLayout(null);
+        JPanel panelDulcesContenedor = new JPanel(new GridLayout(2, 2, 10, 5));
         panelDulcesContenedor.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), "DULCES",
                 TitledBorder.CENTER, TitledBorder.TOP,
                 new Font("Arial", Font.BOLD, 16)));
-        panelDulcesContenedor.setBounds(50, 200, 500, 500);
-        panelProductos.add(panelDulcesContenedor);
 
         // Tamaño para los botones
         int tamanoCuadrado = 80;
 
         // imagenes
-        // DESPUÉS DE LA CREACIÓN DE LOS BOTONES Y PANELES DE INVENTARIO, Y ANTES DE AÑADIRLOS A SUS CONTENEDORES
-
         COCA = crearBotonProducto("Coca Cola", PrecioProductos.COCA.getPrecio(), Color.RED, tamanoCuadrado, iconoCoca);
-        COCA.setBounds(50, 65, tamanoCuadrado, tamanoCuadrado); // x, y, width, height
-        panelBebidasContenedor.add(COCA);
-
         SPRITE = crearBotonProducto("Sprite", PrecioProductos.SPRITE.getPrecio(), Color.GREEN, tamanoCuadrado, iconoSprite);
-        SPRITE.setBounds(150, 65, tamanoCuadrado, tamanoCuadrado);
-        panelBebidasContenedor.add(SPRITE);
-
         FANTA = crearBotonProducto("Fanta", PrecioProductos.FANTA.getPrecio(), Color.ORANGE, tamanoCuadrado, iconoFanta);
-        FANTA.setBounds(300, 65, tamanoCuadrado, tamanoCuadrado);
-        panelBebidasContenedor.add(FANTA);
-
-        panelCocaInventario = crearPanelInventario();
-        panelCocaInventario.setBounds(10, 10 + tamanoCuadrado + 10, tamanoCuadrado, tamanoCuadrado); // Ejemplo: debajo de COCA
-        panelBebidasContenedor.add(panelCocaInventario);
-
-        panelSpriteInventario = crearPanelInventario();
-        panelSpriteInventario.setBounds(10 + tamanoCuadrado + 10, 10 + tamanoCuadrado + 10, tamanoCuadrado, tamanoCuadrado); // Ejemplo: debajo de SPRITE
-        panelBebidasContenedor.add(panelSpriteInventario);
-
-        panelFantaInventario = crearPanelInventario();
-        panelFantaInventario.setBounds(10 + (tamanoCuadrado + 10) * 2, 10 + tamanoCuadrado + 10, tamanoCuadrado, tamanoCuadrado); // Ejemplo: debajo de FANTA
-        panelBebidasContenedor.add(panelFantaInventario);
-
         SNICKER = crearBotonProducto("Snicker", PrecioProductos.SNIKERS.getPrecio(), new Color(139, 69, 19), tamanoCuadrado, iconoSnicker);
-        SNICKER.setBounds(10, 10, tamanoCuadrado, tamanoCuadrado); // Coordenadas relativas a panelDulcesContenedor
-        panelDulcesContenedor.add(SNICKER);
-
         SUPER8 = crearBotonProducto("Super 8", PrecioProductos.SUPER8.getPrecio(), new Color(210, 105, 30), tamanoCuadrado, iconoSuper8);
-        SUPER8.setBounds(10 + tamanoCuadrado + 10, 10, tamanoCuadrado, tamanoCuadrado); // Al lado de SNICKER
-        panelDulcesContenedor.add(SUPER8);
-
-        panelSnickerInventario = crearPanelInventario();
-        panelSnickerInventario.setBounds(10, 10 + tamanoCuadrado + 10, tamanoCuadrado, tamanoCuadrado); // Debajo de SNICKER
-        panelDulcesContenedor.add(panelSnickerInventario);
-
-        panelSuper8Inventario = crearPanelInventario();
-        panelSuper8Inventario.setBounds(10 + tamanoCuadrado + 10, 10 + tamanoCuadrado + 10, tamanoCuadrado, tamanoCuadrado); // Debajo de SUPER8
-        panelDulcesContenedor.add(panelSuper8Inventario);
-
-        panelBebidasContenedor.setBounds(100, 100, 3 * tamanoCuadrado + 40, 2 * tamanoCuadrado + 30); // Ajusta según el contenido
-        panelProductos.add(panelBebidasContenedor);
-
-        panelDulcesContenedor.setBounds(200, 200 + (2 * tamanoCuadrado + 30) + 20, 2 * tamanoCuadrado + 30, 2 * tamanoCuadrado + 30); // Debajo de bebidas, con espacio
-        panelProductos.add(panelDulcesContenedor);
-
-        panelProductos.setBounds(15, 15, 3 * tamanoCuadrado + 60, 4 * tamanoCuadrado + 80); // Ajusta según tus preferencias
-        this.add(panelProductos);
 
         // Registra los actionlistener
         COCA.addActionListener(this);
@@ -167,6 +116,9 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         panelDulcesContenedor.add(panelSnickerInventario);
         panelDulcesContenedor.add(panelSuper8Inventario);
 
+        // Añadir los paneles al panel principal
+        panelProductos.add(panelBebidasContenedor, BorderLayout.NORTH);
+        panelProductos.add(panelDulcesContenedor, BorderLayout.CENTER);
 
         // Añadir el panel de productos al centro
         add(panelProductos, BorderLayout.CENTER);
@@ -192,6 +144,9 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         }
         return null;
     }
+
+
+
 
     private JButton crearBotonProducto(String nombre, int precio, Color color, int tamano, ImageIcon icono) {
         // Crear el botón principal
@@ -264,18 +219,23 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         if (e.getSource() == COCA) {
             tipoProducto = PrecioProductos.COCA;
             item=1;
+            cualProd="COCA";
         } else if (e.getSource() == SPRITE) {
             tipoProducto = PrecioProductos.SPRITE;
             item=2;
+            cualProd="SPRITE";
         } else if (e.getSource() == FANTA) {
             tipoProducto = PrecioProductos.FANTA;
             item=3;
+            cualProd="FANTA";
         } else if (e.getSource() == SNICKER) {
             tipoProducto = PrecioProductos.SNIKERS;
             item=4;
+            cualProd="SNIKERS";
         } else if (e.getSource() == SUPER8) {
             tipoProducto = PrecioProductos.SUPER8;
             item=5;
+            cualProd="super8";
         }
 
 
@@ -290,8 +250,7 @@ public class PanelExpendedor extends JPanel implements ActionListener {
             actualizarInventarioVisual();
         }
     }
-    //retorna el item para el main
-    public int getItem() {
+    public int getItem(){
         return item;
     }
 
@@ -299,4 +258,7 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         return expendedor; // Para hacer la compra en el panel comprador
     }
 
+    public String getcualProd() {
+        return this.cualProd;
+    }
 }

@@ -13,7 +13,7 @@ public class Moneda1000 extends Moneda{
     public Moneda1000(){
         super();
         this.valor = 1000;
-        super.getSerie();
+
     }
     /**
      * Metodo getter el cuál retorna el valor de la moneda.

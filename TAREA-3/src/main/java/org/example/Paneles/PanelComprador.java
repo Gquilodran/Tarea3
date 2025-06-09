@@ -1,6 +1,5 @@
-package org.example.Paneles;
-
-import org.example.*;
+package org.example;
+import org.example.PanelExpendedor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +14,9 @@ public class PanelComprador extends JPanel implements ActionListener {
     private static final int ESTADO_SELECCION_PRODUCTO = 1;
     private static final int ESTADO_RECEPCION_PRODUCTO = 2;
     private static final int ESTADO_RECEPCION_VUELTO = 3;
-
+    //moneda ingresada con enom para sacar del  monedero y guardar luego enel expende
+    private int producto;
+    private int moneda;
     // Estado actual
     private int estadoActual = ESTADO_SELECCION_MONEDA;
 
@@ -35,6 +36,7 @@ public class PanelComprador extends JPanel implements ActionListener {
     private JButton botonMoneda1000;
     private JButton botonReset;
     private JLabel labelEstado;
+    private JButton botonCompra;
 
     // Iconos de monedas
     private ImageIcon iconoMoneda100;
@@ -46,13 +48,17 @@ public class PanelComprador extends JPanel implements ActionListener {
     private JLabel labelProductoSeleccionado;
     private JLabel labelPrecio;
     private JLabel labelVuelto;
+    private Monedero monedero;
+    private PanelExpendedor panelExpendedor; // <-- ¡CORRECTO! // esto es para que sepa que pasa en el otro panel
 
     /**
      * Constructor del panel de comprador
      * @param expendedor referencia al expendedor
      */
-    public PanelComprador(Expendedor expendedor) {
+    public PanelComprador(Expendedor expendedor, PanelExpendedor pExpendedor,Monedero monedero) {
         this.expendedor = expendedor;
+        this.monedero = monedero;
+        this.panelExpendedor = panelExpendedor;
         setLayout(new BorderLayout());
 
         // Crear los paneles principales
@@ -185,6 +191,15 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelInfo.add(Box.createVerticalStrut(10));
         panelInfo.add(botonReset);
 
+        // boton de compra
+        botonCompra = new JButton("comprar");
+        botonCompra.setAlignmentX(Component.CENTER_ALIGNMENT);
+        botonCompra.addActionListener(this);
+
+        panelConsola.add(labelProductoSeleccionado);
+        panelConsola.add(Box.createVerticalStrut(10));
+        panelConsola.add(botonCompra);
+
         // Añadir todo al panel principal
         panelMonedas.add(panelConsola, BorderLayout.NORTH);
         panelMonedas.add(panelCentral, BorderLayout.CENTER);
@@ -204,11 +219,9 @@ public class PanelComprador extends JPanel implements ActionListener {
         int i=0;
         panelNumerico.setLayout(new GridLayout(2, 3, 10, 10));
         while(i != 6) {
-                JButton boton = new JButton(String.valueOf(i+1));
+            JButton boton = new JButton(String.valueOf(i+1));
             boton.setFont(new Font("Arial", Font.PLAIN, 20));
             i++;
-
-
             panelNumerico.add(boton);
         }
         return panelNumerico;
@@ -265,20 +278,42 @@ public class PanelComprador extends JPanel implements ActionListener {
             if (e.getSource() == botonMoneda100) {
                 monedaSeleccionada = new Moneda100();
                 labelMonedaSeleccionada.setText("$100");
+                moneda=1;
                 avanzarEstado();
             } else if (e.getSource() == botonMoneda500) {
                 monedaSeleccionada = new Moneda500();
                 labelMonedaSeleccionada.setText("$500");
+                moneda=2;
                 avanzarEstado();
             } else if (e.getSource() == botonMoneda1000) {
                 monedaSeleccionada = new Moneda1000();
                 labelMonedaSeleccionada.setText("$1000");
+                moneda=3;
                 avanzarEstado();
             }
         }
 
         if (e.getSource() == botonReset) {
             reiniciarCompra();
+        }
+        if (e.getSource() == botonCompra && estadoActual == ESTADO_SELECCION_PRODUCTO){
+            try{
+                Comprador comprador = new Comprador(monedero,moneda,panelExpendedor.getItem(),expendedor);
+                String sabor = comprador.queCompraste();
+                int vuelto = comprador.cuantoVuelto();
+                labelProductoSeleccionado.setText(sabor != null ? sabor : "Ninguno");
+
+                labelVuelto.setText("$" + vuelto);
+                labelEstado.setText("Compra exitosa: " + sabor);
+                avanzarEstado();
+
+            } catch (PagoInsuficienteExcepcion ex) {
+                throw new RuntimeException(ex);
+            } catch (NoHayProductoExcepcion ex) {
+                throw new RuntimeException(ex);
+            } catch (PagoIncorrectoExcepcion ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -332,5 +367,8 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelMonedas.repaint();
         panelResultado.revalidate();
         panelResultado.repaint();
+    }
+    public int getMoneda() {
+        return moneda;
     }
 }

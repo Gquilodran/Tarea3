@@ -7,19 +7,23 @@ package org.example;
  */
 public abstract class Moneda implements Comparable<Moneda>{
     private int valor;
-
+    private final int idMoneda;
+    private static int ultimoIdMoneda = 0;
     /**
      * Constructor por defecto que crea una instancia de <code>Moneda</code>
      */
-    public Moneda() {}
+    public Moneda() {
+        this.idMoneda = ultimoIdMoneda++;
+    }
 
     /**
-     *Retorna la serie de la moneda, que es la instancia actual de <code>Moneda</code>.
+     * Retorna la serie de la moneda, que es la instancia actual de <code>Moneda</code>.
      * Este metodo puede ser sobreescrito por sus subclases
+     *
      * @return la instancia de la moneda actual.
      */
-    public Moneda getSerie(){
-        return this;
+    public int getSerie(){
+        return this.idMoneda;
     }
 
     /**

@@ -1,31 +1,41 @@
-package org.example.Paneles;
-import org.example.Expendedor;
+package org.example;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import org.example.PanelComprador;
+import org.example.PanelExpendedor;
+import org.example.Paneles.PanelMonedero;
 
 
 public class PanelPrincipal extends JPanel {
     private Expendedor expendedor;
     private PanelExpendedor panelExpendedor;
     private PanelComprador panelComprador;
+    private PanelMonedero panelMonedero;
 
-    public PanelPrincipal() {
+
+
+    public PanelPrincipal(int numProduc,int presupuesto) {
         setLayout(new BorderLayout());
+        //aca creamos las clases de la logica
 
-        // Crear el expendedor con 5 productos de cada tipo
-        expendedor = new Expendedor(0);
+        Monedero monedero = new Monedero(presupuesto);
+
+        // Crear el expendedor con  productos de cada tipo
+        expendedor = new Expendedor(numProduc);
 
         // Crear los paneles
-        panelExpendedor = new PanelExpendedor(expendedor);
-        panelComprador = new PanelComprador(expendedor);
+        panelExpendedor  = new PanelExpendedor(expendedor);
+        panelComprador = new PanelComprador(expendedor,panelExpendedor,monedero);
+        panelMonedero = new PanelMonedero();
 
         // Añadir paneles al layout
         add(panelComprador.getPanelMonedas(), BorderLayout.WEST);
         add(panelExpendedor, BorderLayout.CENTER);
         add(panelComprador.getPanelResultado(), BorderLayout.EAST);
+        add(panelMonedero, BorderLayout.EAST);
 
         // Configurar el manejo de eventos del mouse
         addMouseListener(new MouseAdapter() {
@@ -44,4 +54,12 @@ public class PanelPrincipal extends JPanel {
         super.paintComponent(g);
         // Código adicional para dibujar si es necesario
     }
+
+    public int getItem() {
+        return panelExpendedor.getItem();
+    }
+    public int getMon(){
+        return panelComprador.getMoneda();
+    }
+
 }
