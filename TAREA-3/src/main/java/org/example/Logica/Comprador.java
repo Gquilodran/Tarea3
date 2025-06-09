@@ -202,4 +202,25 @@ public class Comprador {
     public Producto verProductoComprado() {
         return productoComprado.verProducto();
     }
+
+
+    /**
+     * Agrega una moneda específica al monedero según su tipo
+     *
+     * @param tipoMoneda tipo de moneda a agregar (1:100, 2:500, 3:1000)
+     */
+    public void agregarMonedaEspecifica(int tipoMoneda) {
+        switch (tipoMoneda) {
+            case 1: // MONEDA_100
+                this.monedero.addProducto(new Moneda100());
+                break;
+            case 2: // MONEDA_500
+                this.monedero.addProducto(new Moneda500());
+                break;
+            case 3: // MONEDA_1000
+                this.monedero.addProducto(new Moneda1000());
+                break;
+        }
+    }
 }
+

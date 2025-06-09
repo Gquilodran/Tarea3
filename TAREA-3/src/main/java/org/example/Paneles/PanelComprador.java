@@ -75,6 +75,8 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelMonedas = new JPanel();
         panelResultado = new JPanel();
         panelMonedero = new PanelMonedero();
+        panelMonedero.setComprador(this.comprador);
+        panelMonedero.setPanelComprador(this);
 
         inicializarPanelMonedas();
         inicializarPanelResultado();
@@ -207,7 +209,7 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelMonedas.add(panelInfo, BorderLayout.SOUTH);
     }
 
-    private void actualizarContadoresMonedas() {
+    public void actualizarContadoresMonedas() {
         labelContador100.setText(contarMonedasPorTipo(MONEDA_100) + "");
         labelContador500.setText(contarMonedasPorTipo(MONEDA_500) + "");
         labelContador1000.setText(contarMonedasPorTipo(MONEDA_1000) + "");
@@ -312,8 +314,17 @@ public class PanelComprador extends JPanel implements ActionListener {
             comprador.registrarCompra(producto, vueltoRecibido);
 
             Moneda monedaVuelto;
+            monedasVuelto.clear(); // Limpiar la lista antes de agregar nuevas monedas
+
             while ((monedaVuelto = expendedor.getVuelto()) != null) {
-                comprador.agregarMoneda(monedaVuelto);
+                // Agregar la moneda al monedero según su valor
+                if (monedaVuelto.getValor() == 100) {
+                    comprador.agregarMonedaEspecifica(MONEDA_100);
+                } else if (monedaVuelto.getValor() == 500) {
+                    comprador.agregarMonedaEspecifica(MONEDA_500);
+                } else if (monedaVuelto.getValor() == 1000) {
+                    comprador.agregarMonedaEspecifica(MONEDA_1000);
+                }
                 monedasVuelto.add(monedaVuelto);
             }
 
@@ -380,7 +391,6 @@ public class PanelComprador extends JPanel implements ActionListener {
         monedaSeleccionadaID = 0;
         productoComprado = null;
         vueltoTotal = 0;
-        monedasVuelto.clear();
         estadoActual = ESTADO_SELECCION_MONEDA;
 
         panelConsola.setMonedaSeleccionada("Ninguna");

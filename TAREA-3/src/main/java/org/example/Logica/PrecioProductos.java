@@ -8,7 +8,7 @@
         SPRITE(2,500),
         FANTA(3,600),
         SNIKERS(4,400),
-        SUPER8(5,300);
+        SUPER8(5,100);
 
         private final int precio;
         private final int num;

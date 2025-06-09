@@ -241,9 +241,9 @@ public class PanelExpendedor extends JPanel implements ActionListener {
 
 
 
-        // Si es un botón de producto y está vacío, rellenar // quitar esto
+        // Si es un botón de producto y está vacío, rellenar //
         if (tipoProducto != null && expendedor.getCantidadDisponible(tipoProducto) == 0) {
-            expendedor.rellenarDeposito(tipoProducto, 8); // Rellenar con 5 unidades
+            expendedor.rellenarDeposito(tipoProducto, 6);
             JOptionPane.showMessageDialog(this,
                     "Se ha rellenado el depósito de " + tipoProducto.name(),
                     "Depósito Rellenado",

@@ -1,5 +1,6 @@
 package org.example.Paneles;
 
+import org.example.Logica.Comprador;
 import org.example.Logica.Moneda;
 import org.example.Logica.Moneda100;
 import org.example.Logica.Moneda500;
@@ -22,10 +23,13 @@ public class PanelMonedero extends JPanel implements ActionListener {
 
     private ArrayList<Moneda> monedasVuelto = new ArrayList<>();
     private ArrayList<JButton> botonesMonedas = new ArrayList<>();
+    private Comprador comprador; // Referencia al comprador
 
     private ImageIcon iconoMoneda100;
     private ImageIcon iconoMoneda500;
     private ImageIcon iconoMoneda1000;
+
+    private PanelComprador panelComprador;
 
     /**
      * Constructor que inicializa el panel del monedero
@@ -38,6 +42,15 @@ public class PanelMonedero extends JPanel implements ActionListener {
 
         // Cargar imágenes de monedas
         cargarImagenesMonedas();
+
+    }
+
+    /**
+     * Establece el comprador asociado con este panel
+     * @param comprador el objeto Comprador que recibirá las monedas recogidas
+     */
+    public void setComprador(Comprador comprador) {
+        this.comprador = comprador;
     }
 
     /**
@@ -73,13 +86,22 @@ public class PanelMonedero extends JPanel implements ActionListener {
      * @param monedas lista de monedas que representan el vuelto
      */
     public void actualizarVueltoVisual(ArrayList<Moneda> monedas) {
-        // Limpiar el panel y la lista de botones
+        // No limpiar el panel ni la lista de botones existentes
+
+        // Añadir las nuevas monedas a la colección existente
+        if (this.monedasVuelto == null) {
+            this.monedasVuelto = new ArrayList<>();
+        }
+
+        // Añadir las nuevas monedas a la lista existente
+        this.monedasVuelto.addAll(monedas);
+
+        // Ordenar todas las monedas usando el Comparable de Moneda (de menor a mayor)
+        Collections.sort(this.monedasVuelto);
+
+        // Limpiar el panel y la lista de botones para recrearlos
         removeAll();
         botonesMonedas.clear();
-
-        // Guardar las monedas y ordenarlas usando el Comparable de Moneda (de menor a mayor)
-        this.monedasVuelto = new ArrayList<>(monedas);
-        Collections.sort(this.monedasVuelto);
 
         // Crear un botón para cada moneda
         for (Moneda moneda : this.monedasVuelto) {
@@ -89,6 +111,19 @@ public class PanelMonedero extends JPanel implements ActionListener {
         }
 
         // Actualizar el panel
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * Método para limpiar completamente el panel de monedas
+     */
+    public void limpiarVuelto() {
+        if (this.monedasVuelto != null) {
+            this.monedasVuelto.clear();
+        }
+        removeAll();
+        botonesMonedas.clear();
         revalidate();
         repaint();
     }
@@ -132,6 +167,15 @@ public class PanelMonedero extends JPanel implements ActionListener {
     }
 
     /**
+     * Establece el panel comprador asociado con este panel
+     * @param panelComprador el PanelComprador que maneja las acciones del comprador
+     */
+
+    public void setPanelComprador(PanelComprador panelComprador) {
+        this.panelComprador = panelComprador;
+    }
+
+    /**
      * Maneja los eventos de clic en los botones de monedas
      * @param e evento de acción
      */
@@ -141,12 +185,31 @@ public class PanelMonedero extends JPanel implements ActionListener {
         if (indice >= 0 && indice < monedasVuelto.size()) {
             Moneda moneda = monedasVuelto.get(indice);
 
+            // Agregar la moneda al monedero del comprador si existe
+            // Eliminar esta línea para evitar agregar la misma moneda dos veces
+            // comprador.agregarMoneda(moneda);
+
             // Mostrar mensaje informativo
             JOptionPane.showMessageDialog(this,
                     "Has recogido una moneda de $" + moneda.getValor() +
-                            " (Serie: " + moneda.getSerie() + ")",
+                            " (Serie: " + moneda.getSerie() + ")" +
+                            "\nLa moneda ha sido agregada a tu monedero.",
                     "Moneda recogida",
                     JOptionPane.INFORMATION_MESSAGE);
+
+            // Agregar la moneda según su tipo (solo mantener esta forma)
+            if (moneda.getValor() == 100) {
+                comprador.agregarMonedaEspecifica(1);  // MONEDA_100
+            } else if (moneda.getValor() == 500) {
+                comprador.agregarMonedaEspecifica(2);  // MONEDA_500
+            } else if (moneda.getValor() == 1000) {
+                comprador.agregarMonedaEspecifica(3);  // MONEDA_1000
+            }
+
+            // Actualizar contadores de monedas en el panel comprador
+            if (panelComprador != null) {
+                panelComprador.actualizarContadoresMonedas();
+            }
 
             // Eliminar la moneda y su botón
             monedasVuelto.remove(indice);
