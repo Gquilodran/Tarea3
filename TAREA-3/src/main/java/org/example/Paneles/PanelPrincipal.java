@@ -40,7 +40,8 @@ public class PanelPrincipal extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Código adicional para dibujar si es necesario
+        panelExpendedor.paintComponent(g);
+        panelComprador.paintComponent(g);
     }
 
     public int getItem() {

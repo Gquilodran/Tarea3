@@ -287,4 +287,11 @@ public class PanelExpendedor extends JPanel implements ActionListener {
         this.revalidate();
         this.repaint();
     }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(new Color(230, 230, 250)); // Lavanda claro
+        g.fillRect(0, 0, getWidth(), getHeight());
+    }
 }

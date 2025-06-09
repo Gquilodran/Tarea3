@@ -22,10 +22,8 @@ public class PanelConsola extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Fondo personalizado (opcional)
         g.setColor(new Color(230, 230, 250)); // Lavanda claro
         g.fillRect(0, 0, getWidth(), getHeight());
-        // Puedes agregar más decoraciones aquí si lo deseas
     }
 
     private void inicializarComponentes() {
@@ -93,4 +91,5 @@ public class PanelConsola extends JPanel {
         setProductoSeleccionado("No disponible");
         setPrecio(0);
     }
+
 }

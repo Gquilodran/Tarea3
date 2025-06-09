@@ -38,6 +38,8 @@ public class PanelComprador extends JPanel implements ActionListener {
     private JPanel panelResultado;
     private PanelNumerico panelNumerico;
     private PanelConsola panelConsola;
+    private PanelMonedero panelMonedero;
+
 
     // Componentes para monedas
     private JButton botonMoneda100;
@@ -72,6 +74,7 @@ public class PanelComprador extends JPanel implements ActionListener {
         // Crear los paneles principales
         panelMonedas = new JPanel();
         panelResultado = new JPanel();
+        panelMonedero = new PanelMonedero();
 
         inicializarPanelMonedas();
         inicializarPanelResultado();
@@ -99,7 +102,6 @@ public class PanelComprador extends JPanel implements ActionListener {
 
         // Panel para los botones de monedas (en fila horizontal)
         JPanel panelBotonesMonedas = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
-
 
 
         // Cargar imágenes para las monedas
@@ -252,9 +254,8 @@ public class PanelComprador extends JPanel implements ActionListener {
         etiquetaTemporal.setHorizontalAlignment(SwingConstants.CENTER);
         panelResultado.add(etiquetaTemporal, BorderLayout.NORTH);
 
-        JPanel panelVuelto = new JPanel();
-        panelVuelto.setLayout(new BoxLayout(panelVuelto, BoxLayout.Y_AXIS));
-        panelResultado.add(panelVuelto, BorderLayout.CENTER);
+        // Añadir el panelMonedero debajo de la etiqueta
+        panelResultado.add(panelMonedero, BorderLayout.CENTER);
     }
 
     @Override
@@ -320,6 +321,9 @@ public class PanelComprador extends JPanel implements ActionListener {
             vueltoTotal = vueltoRecibido;
             panelConsola.setVuelto(vueltoTotal);
 
+            // Actualizar el panel de monedero con las monedas de vuelto
+            panelMonedero.actualizarVueltoVisual(monedasVuelto);
+
             String sabor = comprador.queCompraste();
             if (sabor != null) {
                 panelConsola.setProductoSeleccionado(sabor);
@@ -328,23 +332,29 @@ public class PanelComprador extends JPanel implements ActionListener {
                 actualizarContadoresMonedas();
                 comprador.guardarProductoComprado(productoComprado);
 
-                // --- Actualizar el botón PanelProducto ---
-                panelProductoBtn.repaint();
+                // Verificar si panelProductoBtn existe antes de actualizarlo
+                if (panelProductoBtn != null) {
+                    panelProductoBtn.repaint();
+                }
 
-                reiniciarEstadoParaNuevaCompra();
+                // Reiniciar automáticamente después de una compra exitosa
+                reiniciarCompra();
             }
         } catch (PagoInsuficienteExcepcion e) {
             JOptionPane.showMessageDialog(this, "El pago es insuficiente para este producto");
             comprador.agregarMoneda(monedaUsada);
             actualizarContadoresMonedas();
+            reiniciarCompra();
         } catch (NoHayProductoExcepcion e) {
             JOptionPane.showMessageDialog(this, "No hay stock de este producto");
             comprador.agregarMoneda(monedaUsada);
             actualizarContadoresMonedas();
+            reiniciarCompra();
         } catch (PagoIncorrectoExcepcion e) {
             JOptionPane.showMessageDialog(this, "Moneda inválida");
             comprador.agregarMoneda(monedaUsada);
             actualizarContadoresMonedas();
+            reiniciarCompra();
         }
     }
 
@@ -358,29 +368,9 @@ public class PanelComprador extends JPanel implements ActionListener {
             panelNumerico.resetSeleccion();
         }
 
-        // --- Actualizar el botón PanelProducto ---
-        panelProductoBtn.repaint();
-
-        actualizarInterfaz();
-    }
-
-    public void procesarClick(MouseEvent e) {
-        // Método mantenido para compatibilidad, pero no es necesario
-    }
-
-    private void avanzarEstado() {
-        if (estadoActual == ESTADO_SELECCION_MONEDA) {
-            estadoActual = ESTADO_SELECCION_PRODUCTO;
-            labelEstado.setText("Seleccione un producto");
-        } else if (estadoActual == ESTADO_SELECCION_PRODUCTO) {
-            estadoActual = ESTADO_RECEPCION_PRODUCTO;
-            labelEstado.setText("Producto comprado");
-        } else if (estadoActual == ESTADO_RECEPCION_PRODUCTO) {
-            estadoActual = ESTADO_RECEPCION_VUELTO;
-            labelEstado.setText("Recoger su vuelto");
-        } else if (estadoActual == ESTADO_RECEPCION_VUELTO) {
-            estadoActual = ESTADO_SELECCION_MONEDA;
-            labelEstado.setText("Seleccione una moneda");
+        // Verificar si panelProductoBtn existe antes de actualizarlo
+        if (panelProductoBtn != null) {
+            panelProductoBtn.repaint();
         }
 
         actualizarInterfaz();
@@ -403,8 +393,33 @@ public class PanelComprador extends JPanel implements ActionListener {
             panelNumerico.resetSeleccion();
         }
 
-        // --- Actualizar el botón PanelProducto ---
-        panelProductoBtn.repaint();
+        // Verificar si panelProductoBtn existe antes de actualizarlo
+        if (panelProductoBtn != null) {
+            panelProductoBtn.repaint();
+        }
+
+        actualizarInterfaz();
+    }
+
+
+    public void procesarClick(MouseEvent e) {
+        // Método mantenido para compatibilidad, pero no es necesario
+    }
+
+    private void avanzarEstado() {
+        if (estadoActual == ESTADO_SELECCION_MONEDA) {
+            estadoActual = ESTADO_SELECCION_PRODUCTO;
+            labelEstado.setText("Seleccione un producto");
+        } else if (estadoActual == ESTADO_SELECCION_PRODUCTO) {
+            estadoActual = ESTADO_RECEPCION_PRODUCTO;
+            labelEstado.setText("Producto comprado");
+        } else if (estadoActual == ESTADO_RECEPCION_PRODUCTO) {
+            estadoActual = ESTADO_RECEPCION_VUELTO;
+            labelEstado.setText("Recoger su vuelto");
+        } else if (estadoActual == ESTADO_RECEPCION_VUELTO) {
+            estadoActual = ESTADO_SELECCION_MONEDA;
+            labelEstado.setText("Seleccione una moneda");
+        }
 
         actualizarInterfaz();
     }
@@ -430,4 +445,7 @@ public class PanelComprador extends JPanel implements ActionListener {
     }
 
 
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);}
 }

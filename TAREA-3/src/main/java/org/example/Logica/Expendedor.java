@@ -148,20 +148,26 @@ public class Expendedor {
 
     public void guardarVuelto(int vueltoTotal) {
 
-    // Agrega las monedas al dep del vuelto
-        while (vueltoTotal >= 1000) {
+        int monedas1000 = vueltoTotal / 1000;
+        vueltoTotal %= 1000;
+
+        int monedas500 = vueltoTotal / 500;
+        vueltoTotal %= 500;
+
+        int monedas100 = vueltoTotal / 100;
+
+        // Ahora añadimos las monedas al depósito del vuelto
+        for (int i = 0; i < monedas1000; i++) {
             monVu.addProducto(new Moneda1000());
-            vueltoTotal -= 1000;
-        }
-        while (vueltoTotal >= 500) {
-            monVu.addProducto(new Moneda500());
-            vueltoTotal -= 500;
-        }
-        while (vueltoTotal >= 100) {
-            monVu.addProducto(new Moneda100());
-            vueltoTotal -= 100;
         }
 
+        for (int i = 0; i < monedas500; i++) {
+            monVu.addProducto(new Moneda500());
+        }
+
+        for (int i = 0; i < monedas100; i++) {
+            monVu.addProducto(new Moneda100());
+        }
     }
 
     public Producto getProductoDep() { //SACA EL PRODUCTO GUARDADO EN EL DEPOSITO
