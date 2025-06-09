@@ -21,7 +21,6 @@ public class Comprador {
     /**
      * Constructor de la clase Comprador.
      *
-     * @param m             Moneda utilizada para realizar la compra.
      * @param cualProducto  Índice o tipo de producto que se desea comprar.
      * @param exp           Referencia al expendedor donde se realiza la compra.
      * @throws PagoInsuficienteExcepcion  Si el dinero entregado no es suficiente.
@@ -48,6 +47,20 @@ public class Comprador {
      */
     public int cuantoVuelto(){
         return this.vuelto;
+    }
+    public void guardaVuelto(int i) {
+        while (i != 0) {
+            if (i >= 1000) {
+                monedero.addProducto(new Moneda1000());
+                i-=1000;
+            } else if (i >= 500) {
+                monedero.addProducto(new Moneda500());
+                i-=500;
+            } else if (i >= 100) {
+                monedero.addProducto(new Moneda100());
+                i-=100;
+            }
+        }
     }
     /**
      * Devuelve el sabor del producto que el comprador adquirió.

@@ -14,7 +14,8 @@ import java.util.ArrayList;
 public class PanelMonedero extends JPanel implements ActionListener {
 
     private JPanel panelMonedasVueltoDisplay;
-    private JPanel panelMonederoBase;
+    private JPanel panelMonedero;
+    private JPanel panelMonederoDisplay;
     private JButton obtenerVueltoButton;
     private Deposito<Moneda> monedasVueltoDeposito;
     public PanelMonedero() {
@@ -24,24 +25,17 @@ public class PanelMonedero extends JPanel implements ActionListener {
     }
 
     private void inicializarComponentes() {
-
-        setLayout(new GridLayout(2, 1, 5, 5));
+        setLayout(new BorderLayout(5, 5)); // Cambiado a BorderLayout para un solo panel central
         setBorder(BorderFactory.createEmptyBorder(25, 25, 10, 10));
-        panelMonedasVueltoDisplay = new JPanel();
-        panelMonedasVueltoDisplay.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panelMonedasVueltoDisplay.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Su Vuelto",
+
+        JPanel panelMonederoPrincipal = new JPanel();
+        panelMonederoPrincipal.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
+        panelMonederoPrincipal.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(), "Monedero",
                 TitledBorder.CENTER, TitledBorder.TOP,
                 new Font("Arial", Font.BOLD, 10)));
-        panelMonedasVueltoDisplay.setPreferredSize(new Dimension(100, 80));
-        add(panelMonedasVueltoDisplay, BorderLayout.CENTER); // Añadir al PanelMonedero principal
-
-        obtenerVueltoButton = new JButton("Obtener Vuelto");
-        obtenerVueltoButton.setFont(new Font("Arial", Font.BOLD, 18));
-        obtenerVueltoButton.addActionListener(this);
-        add(obtenerVueltoButton, BorderLayout.SOUTH);
-
-        actualizarVueltoVisual(new ArrayList<>());
+        add(panelMonederoPrincipal, BorderLayout.CENTER); // Añadido al centro del BorderLayout
+        // actualizarVueltoVisual(new ArrayList<>()); // Esta línea probablemente no es necesaria si solo es el monedero
     }
 
 

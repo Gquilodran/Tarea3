@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Paneles;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+
+import org.example.Expendedor;
+import org.example.PrecioProductos;
 
 public class PanelExpendedor extends JPanel implements ActionListener {
 
@@ -250,7 +253,7 @@ public class PanelExpendedor extends JPanel implements ActionListener {
             actualizarInventarioVisual();
         }
     }
-    public int getItem(){
+    public int getItem() {
         return item;
     }
 

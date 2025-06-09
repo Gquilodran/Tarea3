@@ -4,12 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import org.example.PanelComprador;
-import org.example.PanelExpendedor;
+
+import org.example.Paneles.PanelComprador;
+import org.example.Paneles.PanelExpendedor;
 import org.example.Paneles.PanelMonedero;
 
 
 public class PanelPrincipal extends JPanel {
+    private Deposito monedero;
     private Expendedor expendedor;
     private PanelExpendedor panelExpendedor;
     private PanelComprador panelComprador;
@@ -18,6 +20,7 @@ public class PanelPrincipal extends JPanel {
 
 
     public PanelPrincipal(int numProduc,int presupuesto) {
+        monedero = new Deposito<Moneda>();
         setLayout(new BorderLayout());
         //aca creamos las clases de la logica
 

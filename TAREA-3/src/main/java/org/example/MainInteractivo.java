@@ -17,7 +17,7 @@ public class MainInteractivo {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Ventana(10, 1100);
+                new Ventana(8, 10000);
             }
         });
     }

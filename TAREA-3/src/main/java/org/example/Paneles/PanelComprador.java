@@ -1,5 +1,10 @@
-package org.example;
-import org.example.PanelExpendedor;
+package org.example.Paneles;
+
+import org.example.Expendedor;
+import org.example.*;
+import org.example.Moneda;
+import org.example.Monedero;
+import org.example.Producto;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,14 +19,20 @@ public class PanelComprador extends JPanel implements ActionListener {
     private static final int ESTADO_SELECCION_PRODUCTO = 1;
     private static final int ESTADO_RECEPCION_PRODUCTO = 2;
     private static final int ESTADO_RECEPCION_VUELTO = 3;
-    //moneda ingresada con enom para sacar del  monedero y guardar luego enel expende
-    private int producto;
-    private int moneda;
+
+    // Valores para las monedas en el monedero
+    private static final int MONEDA_100 = 1;
+    private static final int MONEDA_500 = 2;
+    private static final int MONEDA_1000 = 3;
+
     // Estado actual
     private int estadoActual = ESTADO_SELECCION_MONEDA;
 
     private Expendedor expendedor;
-    private Moneda monedaSeleccionada = null;
+    private PanelExpendedor panelExpendedor;
+    private Monedero monedero;
+
+    private int monedaSeleccionadaID = 0; // Para identificar qué moneda se seleccionó (1:100, 2:500, 3:1000)
     private Producto productoComprado = null;
     private int vueltoTotal = 0;
     private ArrayList<Moneda> monedasVuelto = new ArrayList<>();
@@ -29,36 +40,33 @@ public class PanelComprador extends JPanel implements ActionListener {
     // Paneles principales
     private JPanel panelMonedas;
     private JPanel panelResultado;
+    private PanelNumerico panelNumerico;
+    private PanelConsola panelConsola;
 
     // Componentes para monedas
     private JButton botonMoneda100;
     private JButton botonMoneda500;
     private JButton botonMoneda1000;
     private JButton botonReset;
-    private JLabel labelEstado;
     private JButton botonCompra;
+    private JLabel labelEstado;
 
     // Iconos de monedas
     private ImageIcon iconoMoneda100;
     private ImageIcon iconoMoneda500;
     private ImageIcon iconoMoneda1000;
 
-    // Etiquetas de la consola
-    private JLabel labelMonedaSeleccionada;
-    private JLabel labelProductoSeleccionado;
-    private JLabel labelPrecio;
-    private JLabel labelVuelto;
-    private Monedero monedero;
-    private PanelExpendedor panelExpendedor; // <-- ¡CORRECTO! // esto es para que sepa que pasa en el otro panel
-
     /**
      * Constructor del panel de comprador
      * @param expendedor referencia al expendedor
+     * @param panelExpendedor referencia al panel del expendedor
+     * @param monedero referencia al monedero del usuario
      */
-    public PanelComprador(Expendedor expendedor, PanelExpendedor pExpendedor,Monedero monedero) {
+    public PanelComprador(Expendedor expendedor, PanelExpendedor panelExpendedor, Monedero monedero) {
         this.expendedor = expendedor;
-        this.monedero = monedero;
         this.panelExpendedor = panelExpendedor;
+        this.monedero = monedero;
+
         setLayout(new BorderLayout());
 
         // Crear los paneles principales
@@ -88,49 +96,13 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelMonedas.setLayout(new BorderLayout(10, 10));
         panelMonedas.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Panel para la consola superior
-        JPanel panelConsola = new JPanel();
-        panelConsola.setLayout(new BoxLayout(panelConsola, BoxLayout.Y_AXIS));
-        panelConsola.setBorder(BorderFactory.createTitledBorder("Consola"));
-
-        // Etiquetas de información
-        JLabel labelTituloMoneda = new JLabel("MONEDA SELECCIONADA: ");
-        JLabel labelTituloProducto = new JLabel("PRODUCTO SELECCIONADO: ");
-        JLabel labelTituloPrecio = new JLabel("PRECIO: ");
-        JLabel labelTituloVuelto = new JLabel("VUELTO: ");
-
-        labelMonedaSeleccionada = new JLabel("Ninguna");
-        labelProductoSeleccionado = new JLabel("Ninguno");
-        labelPrecio = new JLabel("$0");
-        labelVuelto = new JLabel("$0");
-
-        // Panel para cada línea de información
-        JPanel panelInfoMoneda = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelInfoMoneda.add(labelTituloMoneda);
-        panelInfoMoneda.add(labelMonedaSeleccionada);
-
-        JPanel panelInfoProducto = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelInfoProducto.add(labelTituloProducto);
-        panelInfoProducto.add(labelProductoSeleccionado);
-
-        JPanel panelInfoPrecio = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelInfoPrecio.add(labelTituloPrecio);
-        panelInfoPrecio.add(labelPrecio);
-
-        JPanel panelInfoVuelto = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelInfoVuelto.add(labelTituloVuelto);
-        panelInfoVuelto.add(labelVuelto);
-
-        // Añadir paneles de información a la consola
-        panelConsola.add(panelInfoMoneda);
-        panelConsola.add(panelInfoProducto);
-        panelConsola.add(panelInfoPrecio);
-        panelConsola.add(panelInfoVuelto);
+        // Crear e inicializar el panel de consola
+        panelConsola = new PanelConsola();
 
         // Crear un panel central que contendrá monedas y panel numérico
         JPanel panelCentral = new JPanel(new BorderLayout(10, 10));
 
-        // Panel para los botones de monedas (ahora en fila horizontal)
+        // Panel para los botones de monedas (en fila horizontal)
         JPanel panelBotonesMonedas = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
 
         // Cargar imágenes para las monedas
@@ -138,7 +110,7 @@ public class PanelComprador extends JPanel implements ActionListener {
         iconoMoneda500 = new ImageIcon(getClass().getClassLoader().getResource("moneda500.png"));
         iconoMoneda1000 = new ImageIcon(getClass().getClassLoader().getResource("moneda1000.png"));
 
-        // Redimensiona las imagenes
+        // Redimensiona las imágenes
         if (iconoMoneda100 != null) {
             Image img = iconoMoneda100.getImage();
             iconoMoneda100 = new ImageIcon(img.getScaledInstance(60, 60, Image.SCALE_SMOOTH));
@@ -173,7 +145,7 @@ public class PanelComprador extends JPanel implements ActionListener {
         // Añadir el panel numérico en el centro del panel central
         panelCentral.add(inicializarPanelNumerico(), BorderLayout.CENTER);
 
-        // Panel de información
+        // Panel de información y botones de acción
         JPanel panelInfo = new JPanel();
         panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
 
@@ -182,6 +154,12 @@ public class PanelComprador extends JPanel implements ActionListener {
         labelEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
         labelEstado.setFont(new Font("Arial", Font.BOLD, 14));
 
+        // Botón de compra
+        botonCompra = new JButton("Comprar");
+        botonCompra.setAlignmentX(Component.CENTER_ALIGNMENT);
+        botonCompra.addActionListener(this);
+        botonCompra.setEnabled(false); // Inicialmente desactivado hasta seleccionar moneda
+
         // Botón de reset
         botonReset = new JButton("Reiniciar");
         botonReset.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -189,16 +167,9 @@ public class PanelComprador extends JPanel implements ActionListener {
 
         panelInfo.add(labelEstado);
         panelInfo.add(Box.createVerticalStrut(10));
+        panelInfo.add(botonCompra);
+        panelInfo.add(Box.createVerticalStrut(5));
         panelInfo.add(botonReset);
-
-        // boton de compra
-        botonCompra = new JButton("comprar");
-        botonCompra.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonCompra.addActionListener(this);
-
-        panelConsola.add(labelProductoSeleccionado);
-        panelConsola.add(Box.createVerticalStrut(10));
-        panelConsola.add(botonCompra);
 
         // Añadir todo al panel principal
         panelMonedas.add(panelConsola, BorderLayout.NORTH);
@@ -211,20 +182,24 @@ public class PanelComprador extends JPanel implements ActionListener {
      * @return JPanel con el panel numérico configurado
      */
     private JPanel inicializarPanelNumerico() {
+        // Crear instancia de tu PanelNumerico personalizado
+        panelNumerico = new PanelNumerico();
 
-// Crea el panel numérico
-        JPanel panelNumerico = new JPanel();
-        panelNumerico.setPreferredSize(new Dimension(300, 150));
-        panelNumerico.setBorder(BorderFactory.createTitledBorder("Panel Numérico"));
-        int i=0;
-        panelNumerico.setLayout(new GridLayout(2, 3, 10, 10));
-        while(i != 6) {
-            JButton boton = new JButton(String.valueOf(i+1));
-            boton.setFont(new Font("Arial", Font.PLAIN, 20));
-            i++;
-            panelNumerico.add(boton);
-        }
-        return panelNumerico;
+        // Registrar listener para actualizar consola inmediatamente
+        panelNumerico.setOnNumberSelectedListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int codigo = Integer.parseInt(e.getActionCommand());
+                panelConsola.actualizarInformacionProducto(codigo, PrecioProductos.values());
+            }
+        });
+
+        // Crear panel contenedor con borde
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createTitledBorder("Panel Numérico"));
+        contenedor.add(panelNumerico, BorderLayout.CENTER);
+
+        return contenedor;
     }
 
     private void configurarBotonMoneda(JButton boton) {
@@ -243,82 +218,87 @@ public class PanelComprador extends JPanel implements ActionListener {
         etiquetaTemporal.setHorizontalAlignment(SwingConstants.CENTER);
         panelResultado.add(etiquetaTemporal, BorderLayout.NORTH);
 
-        // Este panel se completará más adelante
+        // Este panel se completará más adelante con el vuelto
         JPanel panelVuelto = new JPanel();
         panelVuelto.setLayout(new BoxLayout(panelVuelto, BoxLayout.Y_AXIS));
         panelResultado.add(panelVuelto, BorderLayout.CENTER);
     }
 
-    private JButton crearBotonMoneda(String texto, Color color, ImageIcon icono) {
-        JButton boton = new JButton();
-        boton.setLayout(new BorderLayout());
-        boton.setIcon(icono);
-
-        JLabel etiqueta = new JLabel(texto, SwingConstants.CENTER);
-        etiqueta.setFont(new Font("Arial", Font.BOLD, 16));
-        etiqueta.setForeground(Color.BLACK);
-
-        boton.add(etiqueta, BorderLayout.CENTER);
-        boton.setBorderPainted(false);
-        boton.setContentAreaFilled(false);
-        boton.setFocusPainted(false);
-        boton.addActionListener(this);
-
-        // Para centrar el botón
-        JPanel panelCentrador = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelCentrador.setOpaque(false);
-        panelCentrador.add(boton);
-
-        return boton;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (estadoActual == ESTADO_SELECCION_MONEDA) {
-            if (e.getSource() == botonMoneda100) {
-                monedaSeleccionada = new Moneda100();
-                labelMonedaSeleccionada.setText("$100");
-                moneda=1;
-                avanzarEstado();
-            } else if (e.getSource() == botonMoneda500) {
-                monedaSeleccionada = new Moneda500();
-                labelMonedaSeleccionada.setText("$500");
-                moneda=2;
-                avanzarEstado();
-            } else if (e.getSource() == botonMoneda1000) {
-                monedaSeleccionada = new Moneda1000();
-                labelMonedaSeleccionada.setText("$1000");
-                moneda=3;
-                avanzarEstado();
-            }
-        }
-
-        if (e.getSource() == botonReset) {
+        if (e.getSource() == botonMoneda100) {
+            monedaSeleccionadaID = MONEDA_100;
+            panelConsola.setMonedaSeleccionada("$100");
+            avanzarEstado();
+        } else if (e.getSource() == botonMoneda500) {
+            monedaSeleccionadaID = MONEDA_500;
+            panelConsola.setMonedaSeleccionada("$500");
+            avanzarEstado();
+        } else if (e.getSource() == botonMoneda1000) {
+            monedaSeleccionadaID = MONEDA_1000;
+            panelConsola.setMonedaSeleccionada("$1000");
+            avanzarEstado();
+        } else if (e.getSource() == botonCompra && estadoActual == ESTADO_SELECCION_PRODUCTO) {
+            realizarCompra();
+        } else if (e.getSource() == botonReset) {
             reiniciarCompra();
         }
-        if (e.getSource() == botonCompra && estadoActual == ESTADO_SELECCION_PRODUCTO){
-            try{
-                Comprador comprador = new Comprador(monedero,moneda,panelExpendedor.getItem(),expendedor);
-                String sabor = comprador.queCompraste();
-                int vuelto = comprador.cuantoVuelto();
-                labelProductoSeleccionado.setText(sabor != null ? sabor : "Ninguno");
+    }
 
-                labelVuelto.setText("$" + vuelto);
-                labelEstado.setText("Compra exitosa: " + sabor);
-                avanzarEstado();
+    private void realizarCompra() {
+        int productoSeleccionado = panelNumerico.getValorSeleccionado();
 
-            } catch (PagoInsuficienteExcepcion ex) {
-                throw new RuntimeException(ex);
-            } catch (NoHayProductoExcepcion ex) {
-                throw new RuntimeException(ex);
-            } catch (PagoIncorrectoExcepcion ex) {
-                throw new RuntimeException(ex);
-            }
+        if (productoSeleccionado <= 0) {
+            JOptionPane.showMessageDialog(this, "Por favor seleccione un producto");
+            return;
         }
+
+        try {
+            // Usamos la clase Comprador para realizar la compra
+            Comprador comprador = new Comprador(monedero, monedaSeleccionadaID, productoSeleccionado, expendedor);
+
+            // Actualizar la información después de la compra
+            vueltoTotal = comprador.cuantoVuelto();
+            expendedor.guardarVuelto(vueltoTotal);
+            panelConsola.setVuelto(vueltoTotal);
+            String sabor = comprador.queCompraste();
+            if (sabor != null) {
+                panelConsola.setProductoSeleccionado(sabor);
+                JOptionPane.showMessageDialog(this, "¡Compra exitosa! Recibió: " + sabor);
+                if(vueltoTotal != 0){
+                    JOptionPane.showMessageDialog(this, "Has recibido " + vueltoTotal +" de vuelto");
+                }
+                panelExpendedor.actualizarInventarioVisual(); // Actualizar el inventario visual
+
+                // En lugar de avanzar al siguiente estado, reiniciamos directamente
+                // para permitir una nueva selección de moneda
+                reiniciarEstadoParaNuevaCompra();
+            }
+        } catch (PagoInsuficienteExcepcion e) {
+            JOptionPane.showMessageDialog(this, "El pago es insuficiente para este producto");
+        } catch (NoHayProductoExcepcion e) {
+            JOptionPane.showMessageDialog(this, "No hay stock de este producto");
+        } catch (PagoIncorrectoExcepcion e) {
+            JOptionPane.showMessageDialog(this, "Moneda inválida");
+        }
+    }
+
+    // Método nuevo para reiniciar solo el estado sin afectar otros valores
+    private void reiniciarEstadoParaNuevaCompra() {
+        estadoActual = ESTADO_SELECCION_MONEDA;
+        monedaSeleccionadaID = 0;
+        panelConsola.setMonedaSeleccionada("Ninguna");
+        labelEstado.setText("Seleccione una moneda");
+
+        if (panelNumerico != null) {
+            panelNumerico.resetSeleccion();
+        }
+
+        actualizarInterfaz();
     }
 
     public void procesarClick(MouseEvent e) {
-        // Se implementará cuando hagamos la selección de productos
+        // Método mantenido para compatibilidad, pero no es necesario
     }
 
     private void avanzarEstado() {
@@ -327,7 +307,7 @@ public class PanelComprador extends JPanel implements ActionListener {
             labelEstado.setText("Seleccione un producto");
         } else if (estadoActual == ESTADO_SELECCION_PRODUCTO) {
             estadoActual = ESTADO_RECEPCION_PRODUCTO;
-            labelEstado.setText("Recoger su producto");
+            labelEstado.setText("Producto comprado");
         } else if (estadoActual == ESTADO_RECEPCION_PRODUCTO) {
             estadoActual = ESTADO_RECEPCION_VUELTO;
             labelEstado.setText("Recoger su vuelto");
@@ -340,19 +320,22 @@ public class PanelComprador extends JPanel implements ActionListener {
     }
 
     private void reiniciarCompra() {
-        monedaSeleccionada = null;
+        monedaSeleccionadaID = 0;
         productoComprado = null;
         vueltoTotal = 0;
         monedasVuelto.clear();
         estadoActual = ESTADO_SELECCION_MONEDA;
 
-        // Restaurar etiquetas
-        labelMonedaSeleccionada.setText("Ninguna");
-        labelProductoSeleccionado.setText("Ninguno");
-        labelPrecio.setText("$0");
-        labelVuelto.setText("$0");
+        // Restaurar etiquetas de la consola
+        panelConsola.setMonedaSeleccionada("Ninguna");
+        panelConsola.setProductoSeleccionado("Ninguno");
+        panelConsola.setPrecio(0);
+        panelConsola.setVuelto(0);
         labelEstado.setText("Seleccione una moneda");
 
+        if (panelNumerico != null) {
+            panelNumerico.resetSeleccion();
+        }
         actualizarInterfaz();
     }
 
@@ -361,6 +344,7 @@ public class PanelComprador extends JPanel implements ActionListener {
         botonMoneda100.setEnabled(estadoActual == ESTADO_SELECCION_MONEDA);
         botonMoneda500.setEnabled(estadoActual == ESTADO_SELECCION_MONEDA);
         botonMoneda1000.setEnabled(estadoActual == ESTADO_SELECCION_MONEDA);
+        botonCompra.setEnabled(estadoActual == ESTADO_SELECCION_PRODUCTO);
 
         // Refrescar componentes
         panelMonedas.revalidate();
@@ -368,7 +352,8 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelResultado.revalidate();
         panelResultado.repaint();
     }
+
     public int getMoneda() {
-        return moneda;
+        return monedaSeleccionadaID;
     }
 }

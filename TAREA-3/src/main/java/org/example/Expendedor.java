@@ -174,8 +174,11 @@ public class Expendedor {
         return productoComprado;
     }
 
-    public int getUltimoVuelto() {
+    public int getUltimoVuelto(){
         return vuelto;
+    }
+    public Moneda VueltoMon(){
+        return monVu.getProducto();
     }
 
     /**
