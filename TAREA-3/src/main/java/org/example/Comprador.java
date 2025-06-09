@@ -10,6 +10,8 @@ public class Comprador {
     private Monedero monedero; // llenar desde el cosntructor de aca se scaran las monedas
 
     private String sabor;
+
+    private int id;
     /**
      * Esta variable almacena el vuelto
      */
@@ -39,6 +41,7 @@ public class Comprador {
         producto = exp.getProductoComprado();
         if (producto != null) {
             this.sabor = producto.getSabor(); // guarda sabor si se pudo comprar
+            this.id = producto.getId();
         }
     }
     /**
@@ -56,6 +59,9 @@ public class Comprador {
      */
     public String queCompraste(){
         return this.sabor;
+    }
+    public String getid(){
+        return String.valueOf(this.id);
     }
 
 }

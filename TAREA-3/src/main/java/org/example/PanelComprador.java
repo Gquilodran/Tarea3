@@ -36,7 +36,8 @@ public class PanelComprador extends JPanel implements ActionListener {
     private JButton botonReset;
     private JLabel labelEstado;
     private JButton botonCompra;
-
+    private JButton botonVuelto;
+    private JButton botonProducto;
     // Iconos de monedas
     private ImageIcon iconoMoneda100;
     private ImageIcon iconoMoneda500;
@@ -189,7 +190,9 @@ public class PanelComprador extends JPanel implements ActionListener {
         panelInfo.add(labelEstado);
         panelInfo.add(Box.createVerticalStrut(10));
         panelInfo.add(botonReset);
-
+        //boton retiro
+        botonProducto = new JButton();
+        botonVuelto = new JButton();
         // boton de compra
         botonCompra = new JButton("comprar");
         botonCompra.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -241,7 +244,9 @@ public class PanelComprador extends JPanel implements ActionListener {
 
         // Este panel se completará más adelante
         JPanel panelVuelto = new JPanel();
-        panelVuelto.setLayout(new BoxLayout(panelVuelto, BoxLayout.Y_AXIS));
+        panelVuelto.setLayout(new GridLayout(2,1));
+        panelVuelto.add(botonVuelto);
+        panelVuelto.add(botonProducto);
         panelResultado.add(panelVuelto, BorderLayout.CENTER);
     }
 
@@ -267,9 +272,11 @@ public class PanelComprador extends JPanel implements ActionListener {
 
         return boton;
     }
-
+    //variable para guardar la id
+    private String idCompra;
     @Override
     public void actionPerformed(ActionEvent e) {
+
         if (estadoActual == ESTADO_SELECCION_MONEDA) {
             if (e.getSource() == botonMoneda100) {
                 monedaSeleccionada = new Moneda100();
@@ -292,13 +299,24 @@ public class PanelComprador extends JPanel implements ActionListener {
         if (e.getSource() == botonReset) {
             reiniciarCompra();
         }
+        if (panelExpendedor.getItem()!=0){
+             int x =panelExpendedor.getItem();
+            if (estadoActual == ESTADO_SELECCION_PRODUCTO && panelExpendedor.getItem() != 0) {
+                producto = panelExpendedor.getItem();
+                String nombreProducto = obtenerNombreProducto(producto);
+                labelProductoSeleccionado.setText(nombreProducto);
+
+            }
+
+
+        }
         if (e.getSource() == botonCompra && estadoActual == ESTADO_SELECCION_PRODUCTO){
             try{
                 Comprador comprador = new Comprador(monedero,moneda,panelExpendedor.getItem(),expendedor);
                 String sabor = comprador.queCompraste();
                 int vuelto = comprador.cuantoVuelto();
                 labelProductoSeleccionado.setText(sabor != null ? sabor : "Ninguno");
-
+                idCompra=comprador.getid();
                 labelVuelto.setText("$" + vuelto);
                 labelEstado.setText("Compra exitosa: " + sabor);
                 avanzarEstado();
@@ -310,6 +328,32 @@ public class PanelComprador extends JPanel implements ActionListener {
             } catch (PagoIncorrectoExcepcion ex) {
                 throw new RuntimeException(ex);
             }
+        }
+        if(e.getSource()==botonProducto && estadoActual ==ESTADO_RECEPCION_PRODUCTO){
+             String nombreProducto = obtenerNombreProducto(producto);
+             String id=idCompra;
+             int k = panelExpendedor.getItem();
+             if(k==1){
+                 JFrame productoFrame = new JFrame("Producto Comprado: " + nombreProducto);
+                 productoFrame.setSize(300, 300);
+                 productoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                 productoFrame.setLocationRelativeTo(null);  // Centra la ventana
+
+                 // Cargar imagen (asegúrate de tener /imagenes/coca.png en tu proyecto)
+                 //ImageIcon imagen = new ImageIcon(getClass().getResource("/resources/coca.png"));
+                 //JLabel labelImagen = new JLabel(imagen);
+
+                 // Mostrar ID como tooltip
+                 //labelImagen.setToolTipText("ID del producto: " + id);
+
+                 // Agregar imagen al frame
+                // productoFrame.add(labelImagen);
+
+                 // Mostrar ventana
+                 productoFrame.setVisible(true);
+             }
+
+
         }
     }
 
@@ -367,4 +411,22 @@ public class PanelComprador extends JPanel implements ActionListener {
     public int getMoneda() {
         return moneda;
     }
+    private String obtenerNombreProducto(int x) {
+        if (x == 1) {
+            return "coca-cola";
+
+        } else if (x == 2) {
+            return "sprite";
+
+        } else if (x == 3) {
+            return "fanta";
+        } else if (x == 4) {
+            return "sniker";
+
+        } else if (x == 5) {
+            return "super8";
+        }
+        return "";
+    }
+
 }
