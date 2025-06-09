@@ -7,11 +7,21 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * PanelPrincipal: Panel principal que organiza y muestra los paneles del expendedor y del comprador.
+ */
 public class PanelPrincipal extends JPanel {
     private Expendedor expendedor;
     private PanelExpendedor panelExpendedor;
     private PanelComprador panelComprador;
 
+    /**
+     * Crea el panel principal y organiza los subpaneles.
+     * @param numProduc cantidad de productos por tipo
+     * @param monedas100 cantidad inicial de monedas de 100
+     * @param monedas500 cantidad inicial de monedas de 500
+     * @param monedas1000 cantidad inicial de monedas de 1000
+     */
     public PanelPrincipal(int numProduc, int monedas100, int monedas500, int monedas1000) {
         setLayout(new BorderLayout());
 
@@ -36,7 +46,6 @@ public class PanelPrincipal extends JPanel {
         });
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -44,6 +53,7 @@ public class PanelPrincipal extends JPanel {
         panelComprador.paintComponent(g);
     }
 
+    /** Devuelve el identificador del producto seleccionado. */
     public int getItem() {
         return panelExpendedor.getItem();
     }

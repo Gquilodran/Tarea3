@@ -7,11 +7,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
+/**
+ * PanelProducto: Botón visual que permite al usuario ver y recoger el producto comprado.
+ */
 public class PanelProducto extends JButton {
     private Comprador comprador;
 
     /**
-     * Constructor que crea un botón para visualizar el producto comprado
+     * Crea un botón para visualizar el producto comprado.
      * @param comprador referencia al comprador que contiene el producto
      */
     public PanelProducto(Comprador comprador) {
@@ -29,8 +32,11 @@ public class PanelProducto extends JButton {
         addActionListener(e -> mostrarVentanaProducto());
     }
 
+    /**
+     * Muestra una ventana emergente con la imagen e información del producto comprado.
+     * Permite al usuario recoger el producto haciendo clic en la imagen.
+     */
     private void mostrarVentanaProducto() {
-        // Verificar si hay un producto disponible
         Producto producto = comprador.verProductoComprado();
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "No hay producto para mostrar",
@@ -38,29 +44,23 @@ public class PanelProducto extends JButton {
             return;
         }
 
-        // Crear nueva ventana para mostrar el producto
         JFrame ventanaProducto = new JFrame("Producto Comprado");
         ventanaProducto.setSize(300, 350);
         ventanaProducto.setLayout(new BorderLayout());
         ventanaProducto.setLocationRelativeTo(this);
 
-        // Panel para mostrar la imagen
         JPanel panelImagen = new JPanel(new BorderLayout());
         panelImagen.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Determinar imagen según el sabor del producto
         String nombreImagen = determinarNombreImagen(producto.getSabor());
         ImageIcon iconoProducto = cargarImagen(nombreImagen, 200, 200);
 
-        // Crear etiqueta con la imagen
         JLabel etiquetaImagen = new JLabel(iconoProducto);
         etiquetaImagen.setHorizontalAlignment(JLabel.CENTER);
 
-        // Etiqueta para mostrar información del producto
         JLabel etiquetaInfo = new JLabel(producto.getSabor(), JLabel.CENTER);
         etiquetaInfo.setFont(new Font("Arial", Font.BOLD, 16));
 
-        // Agregar comportamiento para mostrar información al pasar el ratón
         etiquetaImagen.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -74,7 +74,6 @@ public class PanelProducto extends JButton {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Al hacer clic, sacar el producto del depósito
                 Producto productoObtenido = comprador.getProductoComprado();
                 if (productoObtenido != null) {
                     JOptionPane.showMessageDialog(ventanaProducto,
@@ -85,13 +84,14 @@ public class PanelProducto extends JButton {
             }
         });
 
-        // Armar la ventana
         panelImagen.add(etiquetaImagen, BorderLayout.CENTER);
         ventanaProducto.add(panelImagen, BorderLayout.CENTER);
         ventanaProducto.add(etiquetaInfo, BorderLayout.SOUTH);
 
         ventanaProducto.setVisible(true);
     }
+
+    // Métodos privados auxiliares
 
     private String determinarNombreImagen(String sabor) {
         switch (sabor.toLowerCase()) {
