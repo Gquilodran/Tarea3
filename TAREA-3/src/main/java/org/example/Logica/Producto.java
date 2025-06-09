@@ -6,13 +6,29 @@ package org.example.Logica;
 public abstract class Producto {
     /** String que almacena el sabor del producto */
     protected String sabor;
-    /** constructor vacio para el uso de clases hijas  */
+
+    /** Número de serie único para cada producto */
+    private final int serie;
+
+    /** Contador para generar números de serie únicos */
+    private static int contadorSerie = 0;
+
+    /** Constructor para el uso de clases hijas */
     public Producto(){
+        this.serie = contadorSerie++;
     }
+
     /** Metodo getter para obtener el sabor del producto
      * @return el sabor del producto
      */
     public String getSabor() {
         return sabor;
+    }
+
+    /** Método para obtener el número de serie del producto
+     * @return el número de serie único del producto
+     */
+    public int getSerie() {
+        return serie;
     }
 }

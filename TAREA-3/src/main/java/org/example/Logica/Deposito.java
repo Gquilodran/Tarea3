@@ -43,4 +43,13 @@ public class Deposito<T>{
     public int size() {
         return deposito.size();
     }
+
+
+    public T verProducto(){
+        if(!deposito.isEmpty()) {
+            return deposito.get(0);
+        } else {
+            return null;
+        }
+    }
 }

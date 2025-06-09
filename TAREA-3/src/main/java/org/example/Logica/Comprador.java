@@ -19,6 +19,8 @@ public class Comprador {
      */
     private int vuelto = 0;
 
+    private Deposito<Producto> productoComprado;
+
     /**
      * Constructor de la clase Comprador
      *
@@ -28,6 +30,7 @@ public class Comprador {
      */
     public Comprador(int cantidadMonedas100, int cantidadMonedas500, int cantidadMonedas1000) {
         this.monedero = new Deposito<>();
+        this.productoComprado = new Deposito<Producto>();
 
         // Inicializar el monedero con las cantidades especificadas
         for (int i = 0; i < cantidadMonedas100; i++) {
@@ -180,5 +183,23 @@ public class Comprador {
             monedero.addProducto(moneda);
         }
         return contador;
+    }
+
+    public Producto getProductoComprado() {
+        return productoComprado.getProducto();
+    }
+
+    public void verificarDepositoVacio() throws DepositoLlenoExcepcion {
+        if (this.productoComprado != null && this.productoComprado.size() > 0) {
+            throw new DepositoLlenoExcepcion();
+        }
+    }
+
+    public void guardarProductoComprado(Producto producto) {
+        productoComprado.addProducto(producto);
+    }
+
+    public Producto verProductoComprado() {
+        return productoComprado.verProducto();
     }
 }

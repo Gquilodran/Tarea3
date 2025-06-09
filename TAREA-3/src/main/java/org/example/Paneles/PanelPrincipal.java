@@ -37,13 +37,13 @@ public class PanelPrincipal extends JPanel {
     }
 
 
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            // Código adicional para dibujar si es necesario
-        }
-
-        public int getItem() {
-            return panelExpendedor.getItem();
-        }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // Código adicional para dibujar si es necesario
     }
+
+    public int getItem() {
+        return panelExpendedor.getItem();
+    }
+}

@@ -250,6 +250,8 @@ public class PanelExpendedor extends JPanel implements ActionListener {
                     JOptionPane.INFORMATION_MESSAGE);
             actualizarInventarioVisual();
         }
+
+
     }
     public int getItem() {
         return item;
@@ -261,5 +263,28 @@ public class PanelExpendedor extends JPanel implements ActionListener {
 
     public String getcualProd() {
         return this.cualProd;
+    }
+
+    /**
+     * Agrega un botón para ver el producto comprado en la esquina inferior derecha
+     * del panel expendedor
+     *
+     * @param comprador objeto Comprador que contiene el producto comprado
+     */
+    public void agregarBotonProducto(Comprador comprador) {
+        // Crear el botón personalizado
+        PanelProducto botonProducto = new PanelProducto(comprador);
+
+        // Crear un panel contenedor para posicionarlo en la esquina inferior derecha
+        JPanel panelEsquina = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelEsquina.setOpaque(false);
+        panelEsquina.add(botonProducto);
+
+        // Añadir el panel a la esquina inferior derecha del expendedor
+        this.add(panelEsquina, BorderLayout.SOUTH);
+
+        // Refrescar el panel
+        this.revalidate();
+        this.repaint();
     }
 }
