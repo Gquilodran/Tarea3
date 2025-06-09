@@ -29,7 +29,6 @@ public class PanelMonedero extends JPanel implements ActionListener {
         // Layout principal para PanelMonedero (el JPanel principal de esta clase)
         setLayout(new GridLayout(2, 1, 5, 5)); // 2 filas, 1 columna, con espacios entre ellas
         setBorder(BorderFactory.createEmptyBorder(25, 25, 10, 10));
-        // Este parece ser el panel donde quieres mostrar el vuelto
         panelMonedasVueltoDisplay = new JPanel();
         panelMonedasVueltoDisplay.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         panelMonedasVueltoDisplay.setBorder(BorderFactory.createTitledBorder(
